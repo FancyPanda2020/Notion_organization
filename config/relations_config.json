@@ -1,0 +1,214 @@
+{
+  "relations": [
+    {
+      "name": "Projet",
+      "from_database": "Tasks",
+      "to_database": "PARA_Projects",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Tâches liées",
+      "from_database": "PARA_Projects",
+      "to_database": "Tasks",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Area parent",
+      "from_database": "PARA_Projects",
+      "to_database": "PARA_Areas",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Projets liés",
+      "from_database": "PARA_Areas",
+      "to_database": "PARA_Projects",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Tâche parente",
+      "from_database": "Tasks",
+      "to_database": "Tasks",
+      "type": "self_reference"
+    },
+    {
+      "name": "Sous-tâches",
+      "from_database": "Tasks",
+      "to_database": "Tasks",
+      "type": "self_reference_reverse"
+    },
+    {
+      "name": "Projet associé",
+      "from_database": "DeepWork_Sessions",
+      "to_database": "PARA_Projects",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Sessions deep work",
+      "from_database": "PARA_Projects",
+      "to_database": "DeepWork_Sessions",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Tâche associée",
+      "from_database": "DeepWork_Sessions",
+      "to_database": "Tasks",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Deep work session",
+      "from_database": "Tasks",
+      "to_database": "DeepWork_Sessions",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Objectif associé",
+      "from_database": "Routines",
+      "to_database": "Goals_LongTerm",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Routines liées",
+      "from_database": "Goals_LongTerm",
+      "to_database": "Routines",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Événements calendrier",
+      "from_database": "Routines",
+      "to_database": "Calendar_Master",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Routine liée",
+      "from_database": "Calendar_Master",
+      "to_database": "Routines",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Projets avancés",
+      "from_database": "Weekly_Reviews",
+      "to_database": "PARA_Projects",
+      "type": "many_to_many"
+    },
+    {
+      "name": "Événement calendrier",
+      "from_database": "Security_Items",
+      "to_database": "Calendar_Master",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Item sécurité lié",
+      "from_database": "Calendar_Master",
+      "to_database": "Security_Items",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Objectif lié",
+      "from_database": "Workouts",
+      "to_database": "Sport_Goals",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Entraînements liés",
+      "from_database": "Sport_Goals",
+      "to_database": "Workouts",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Événement calendrier",
+      "from_database": "Workouts",
+      "to_database": "Calendar_Master",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Entraînement lié",
+      "from_database": "Calendar_Master",
+      "to_database": "Workouts",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Activité physique",
+      "from_database": "Health_Metrics",
+      "to_database": "Workouts",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Objectif long terme lié",
+      "from_database": "Sport_Goals",
+      "to_database": "Goals_LongTerm",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Objectifs sportifs liés",
+      "from_database": "Goals_LongTerm",
+      "to_database": "Sport_Goals",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Budget associé",
+      "from_database": "Finance_Transactions",
+      "to_database": "Finance_Budgets",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Transactions liées",
+      "from_database": "Finance_Budgets",
+      "to_database": "Finance_Transactions",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Projet lié",
+      "from_database": "Finance_Transactions",
+      "to_database": "PARA_Projects",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Objectifs liés",
+      "from_database": "PARA_Projects",
+      "to_database": "Goals_LongTerm",
+      "type": "many_to_many"
+    },
+    {
+      "name": "Projets liés",
+      "from_database": "Goals_LongTerm",
+      "to_database": "PARA_Projects",
+      "type": "many_to_many"
+    },
+    {
+      "name": "Objectif long terme lié",
+      "from_database": "Roadmap",
+      "to_database": "Goals_LongTerm",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Projets nécessaires",
+      "from_database": "Roadmap",
+      "to_database": "PARA_Projects",
+      "type": "many_to_many"
+    },
+    {
+      "name": "Dépendances",
+      "from_database": "Roadmap",
+      "to_database": "Roadmap",
+      "type": "self_reference"
+    },
+    {
+      "name": "Tâche liée",
+      "from_database": "Calendar_Master",
+      "to_database": "Tasks",
+      "type": "many_to_one"
+    },
+    {
+      "name": "Événement calendrier",
+      "from_database": "Tasks",
+      "to_database": "Calendar_Master",
+      "type": "one_to_many"
+    },
+    {
+      "name": "Projet lié",
+      "from_database": "Calendar_Master",
+      "to_database": "PARA_Projects",
+      "type": "many_to_one"
+    }
+  ]
+}

@@ -1,0 +1,2250 @@
+{
+  "databases": {
+    "PARA_Projects": {
+      "title": "🗂️ Projets PARA",
+      "description": "Base de données centrale pour la gestion des projets selon la méthode PARA",
+      "properties": {
+        "Nom": {
+          "type": "title",
+          "title": {}
+        },
+        "Type PARA": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Project", "color": "blue"},
+              {"name": "Area", "color": "green"},
+              {"name": "Resource", "color": "yellow"},
+              {"name": "Archive", "color": "gray"}
+            ]
+          }
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "🟢 Actif", "color": "green"},
+              {"name": "🟡 En pause", "color": "yellow"},
+              {"name": "🔴 Terminé", "color": "red"},
+              {"name": "⚫ Annulé", "color": "gray"},
+              {"name": "📦 Archivé", "color": "gray"}
+            ]
+          }
+        },
+        "Priorité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "P1 - Critique", "color": "red"},
+              {"name": "P2 - Haute", "color": "orange"},
+              {"name": "P3 - Moyenne", "color": "yellow"},
+              {"name": "P4 - Faible", "color": "green"}
+            ]
+          }
+        },
+        "Date de début": {
+          "type": "date",
+          "date": {}
+        },
+        "Date de fin": {
+          "type": "date",
+          "date": {}
+        },
+        "Échéance": {
+          "type": "date",
+          "date": {}
+        },
+        "Domaine": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Pro", "color": "blue"},
+              {"name": "Personnel", "color": "purple"},
+              {"name": "Santé", "color": "green"},
+              {"name": "Finance", "color": "yellow"},
+              {"name": "Formation", "color": "orange"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Objectif": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Budget alloué": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Budget dépensé": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Tags": {
+          "type": "multi_select",
+          "multi_select": {
+            "options": []
+          }
+        },
+        "Archivé le": {
+          "type": "date",
+          "date": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        },
+        "Dernière mise à jour": {
+          "type": "last_edited_time",
+          "last_edited_time": {}
+        }
+      }
+    },
+    "PARA_Areas": {
+      "title": "🏠 Areas PARA",
+      "description": "Domaines de responsabilité permanents",
+      "properties": {
+        "Nom": {
+          "type": "title",
+          "title": {}
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Icône": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Couleur": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Rouge", "color": "red"},
+              {"name": "Orange", "color": "orange"},
+              {"name": "Jaune", "color": "yellow"},
+              {"name": "Vert", "color": "green"},
+              {"name": "Bleu", "color": "blue"},
+              {"name": "Violet", "color": "purple"},
+              {"name": "Gris", "color": "gray"}
+            ]
+          }
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Actif", "color": "green"},
+              {"name": "En pause", "color": "yellow"},
+              {"name": "Archivé", "color": "gray"}
+            ]
+          }
+        },
+        "Standard de qualité": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Objectif annuel": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Review mensuelle": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Dernière review": {
+          "type": "date",
+          "date": {}
+        },
+        "Prochaine review": {
+          "type": "date",
+          "date": {}
+        },
+        "KPI principal": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Valeur KPI actuelle": {
+          "type": "number",
+          "number": {}
+        },
+        "Objectif KPI": {
+          "type": "number",
+          "number": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Tasks": {
+      "title": "✅ Tâches",
+      "description": "Gestion des tâches avec support de sous-tâches illimitées",
+      "properties": {
+        "Titre": {
+          "type": "title",
+          "title": {}
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "📥 Backlog", "color": "gray"},
+              {"name": "🟦 En cours", "color": "blue"},
+              {"name": "⏸️ En attente", "color": "yellow"},
+              {"name": "✅ Terminé", "color": "green"},
+              {"name": "❌ Annulé", "color": "red"}
+            ]
+          }
+        },
+        "Priorité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "P1 - Critique", "color": "red"},
+              {"name": "P2 - Haute", "color": "orange"},
+              {"name": "P3 - Moyenne", "color": "yellow"},
+              {"name": "P4 - Faible", "color": "green"}
+            ]
+          }
+        },
+        "Date d'échéance": {
+          "type": "date",
+          "date": {}
+        },
+        "Date de début": {
+          "type": "date",
+          "date": {}
+        },
+        "Date de fin": {
+          "type": "date",
+          "date": {}
+        },
+        "Temps estimé (h)": {
+          "type": "number",
+          "number": {}
+        },
+        "Temps réel (h)": {
+          "type": "number",
+          "number": {}
+        },
+        "Assigné à": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Moi", "color": "blue"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Tags": {
+          "type": "multi_select",
+          "multi_select": {
+            "options": []
+          }
+        },
+        "Contexte": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Bureau", "color": "blue"},
+              {"name": "Maison", "color": "green"},
+              {"name": "Déplacement", "color": "orange"},
+              {"name": "Téléphone", "color": "purple"},
+              {"name": "Ordinateur", "color": "blue"},
+              {"name": "Courses", "color": "yellow"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Énergie requise": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Haute", "color": "red"},
+              {"name": "Moyenne", "color": "yellow"},
+              {"name": "Faible", "color": "green"}
+            ]
+          }
+        },
+        "Récurrent": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Fréquence": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Quotidien", "color": "blue"},
+              {"name": "Hebdomadaire", "color": "green"},
+              {"name": "Mensuel", "color": "yellow"},
+              {"name": "Annuel", "color": "orange"}
+            ]
+          }
+        },
+        "Dernière récurrence": {
+          "type": "date",
+          "date": {}
+        },
+        "Prochaine récurrence": {
+          "type": "date",
+          "date": {}
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Lien externe": {
+          "type": "url",
+          "url": {}
+        },
+        "Fichiers": {
+          "type": "files",
+          "files": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        },
+        "Dernière modification": {
+          "type": "last_edited_time",
+          "last_edited_time": {}
+        },
+        "Complété le": {
+          "type": "date",
+          "date": {}
+        }
+      }
+    },
+    "DeepWork_Sessions": {
+      "title": "🧠 Sessions Deep Work",
+      "description": "Suivi des sessions de travail en profondeur",
+      "properties": {
+        "Titre de session": {
+          "type": "title",
+          "title": {}
+        },
+        "Date": {
+          "type": "date",
+          "date": {}
+        },
+        "Durée prévue (min)": {
+          "type": "number",
+          "number": {}
+        },
+        "Durée réelle (min)": {
+          "type": "number",
+          "number": {}
+        },
+        "Niveau de focus (1-10)": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1", "color": "red"},
+              {"name": "2", "color": "red"},
+              {"name": "3", "color": "orange"},
+              {"name": "4", "color": "orange"},
+              {"name": "5", "color": "yellow"},
+              {"name": "6", "color": "yellow"},
+              {"name": "7", "color": "green"},
+              {"name": "8", "color": "green"},
+              {"name": "9", "color": "blue"},
+              {"name": "10", "color": "blue"}
+            ]
+          }
+        },
+        "Distractions comptées": {
+          "type": "number",
+          "number": {}
+        },
+        "Type de travail": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Écriture", "color": "blue"},
+              {"name": "Code", "color": "purple"},
+              {"name": "Analyse", "color": "yellow"},
+              {"name": "Création", "color": "green"},
+              {"name": "Lecture", "color": "orange"},
+              {"name": "Planification", "color": "red"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Environnement": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Bureau", "color": "blue"},
+              {"name": "Maison", "color": "green"},
+              {"name": "Bibliothèque", "color": "purple"},
+              {"name": "Café", "color": "orange"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Objectif atteint": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Apprentissages": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "État initial": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Énergisé", "color": "green"},
+              {"name": "Neutre", "color": "yellow"},
+              {"name": "Fatigué", "color": "red"}
+            ]
+          }
+        },
+        "État final": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Énergisé", "color": "green"},
+              {"name": "Neutre", "color": "yellow"},
+              {"name": "Fatigué", "color": "orange"},
+              {"name": "Épuisé", "color": "red"}
+            ]
+          }
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Routines": {
+      "title": "⚡ Routines",
+      "description": "Gestion des routines quotidiennes, hebdomadaires et mensuelles",
+      "properties": {
+        "Nom de la routine": {
+          "type": "title",
+          "title": {}
+        },
+        "Fréquence": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Quotidien", "color": "blue"},
+              {"name": "Hebdomadaire", "color": "green"},
+              {"name": "Mensuel", "color": "yellow"}
+            ]
+          }
+        },
+        "Jour(s) de la semaine": {
+          "type": "multi_select",
+          "multi_select": {
+            "options": [
+              {"name": "Lundi", "color": "blue"},
+              {"name": "Mardi", "color": "green"},
+              {"name": "Mercredi", "color": "yellow"},
+              {"name": "Jeudi", "color": "orange"},
+              {"name": "Vendredi", "color": "red"},
+              {"name": "Samedi", "color": "purple"},
+              {"name": "Dimanche", "color": "pink"}
+            ]
+          }
+        },
+        "Heure idéale": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Durée estimée (min)": {
+          "type": "number",
+          "number": {}
+        },
+        "Catégorie": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Matin", "color": "yellow"},
+              {"name": "Soir", "color": "purple"},
+              {"name": "Santé", "color": "green"},
+              {"name": "Travail", "color": "blue"},
+              {"name": "Personnel", "color": "pink"},
+              {"name": "Admin", "color": "gray"}
+            ]
+          }
+        },
+        "Priorité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "P1 - Critique", "color": "red"},
+              {"name": "P2 - Haute", "color": "orange"},
+              {"name": "P3 - Moyenne", "color": "yellow"},
+              {"name": "P4 - Faible", "color": "green"}
+            ]
+          }
+        },
+        "Checklist items": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "🟢 Active", "color": "green"},
+              {"name": "🟡 En pause", "color": "yellow"},
+              {"name": "🔴 Arrêté", "color": "red"}
+            ]
+          }
+        },
+        "Dernière exécution": {
+          "type": "date",
+          "date": {}
+        },
+        "Prochaine exécution": {
+          "type": "date",
+          "date": {}
+        },
+        "Streak actuel": {
+          "type": "number",
+          "number": {}
+        },
+        "Meilleur streak": {
+          "type": "number",
+          "number": {}
+        },
+        "Nombre total d'exécutions": {
+          "type": "number",
+          "number": {}
+        },
+        "Taux de complétion (%)": {
+          "type": "number",
+          "number": {
+            "format": "percent"
+          }
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Pourquoi": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Rappel actif": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Weekly_Reviews": {
+      "title": "📝 Revues Hebdomadaires",
+      "description": "Template de revue hebdomadaire pour réflexion et planification",
+      "properties": {
+        "Semaine": {
+          "type": "title",
+          "title": {}
+        },
+        "Date de début": {
+          "type": "date",
+          "date": {}
+        },
+        "Date de fin": {
+          "type": "date",
+          "date": {}
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "📝 À faire", "color": "gray"},
+              {"name": "🟦 En cours", "color": "blue"},
+              {"name": "✅ Complété", "color": "green"}
+            ]
+          }
+        },
+        "Score de la semaine (1-10)": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1", "color": "red"},
+              {"name": "2", "color": "red"},
+              {"name": "3", "color": "orange"},
+              {"name": "4", "color": "orange"},
+              {"name": "5", "color": "yellow"},
+              {"name": "6", "color": "yellow"},
+              {"name": "7", "color": "green"},
+              {"name": "8", "color": "green"},
+              {"name": "9", "color": "blue"},
+              {"name": "10", "color": "blue"}
+            ]
+          }
+        },
+        "Accomplissements": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Défis": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Apprentissages": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Tâches complétées": {
+          "type": "number",
+          "number": {}
+        },
+        "Entraînements faits": {
+          "type": "number",
+          "number": {}
+        },
+        "Routines complétées (%)": {
+          "type": "number",
+          "number": {
+            "format": "percent"
+          }
+        },
+        "Objectifs de la semaine suivante": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Priorités semaine suivante": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Ajustements à faire": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Gratitude": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Santé / Énergie": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Excellente", "color": "green"},
+              {"name": "Bonne", "color": "blue"},
+              {"name": "Moyenne", "color": "yellow"},
+              {"name": "Faible", "color": "red"}
+            ]
+          }
+        },
+        "État émotionnel": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Très positif", "color": "green"},
+              {"name": "Positif", "color": "blue"},
+              {"name": "Neutre", "color": "yellow"},
+              {"name": "Négatif", "color": "red"}
+            ]
+          }
+        },
+        "Review complétée le": {
+          "type": "date",
+          "date": {}
+        },
+        "Temps passé sur review (min)": {
+          "type": "number",
+          "number": {}
+        },
+        "Notes additionnelles": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Security_Items": {
+      "title": "🔐 Items de Sécurité",
+      "description": "Suivi des éléments de sécurité personnelle",
+      "properties": {
+        "Nom du service/item": {
+          "type": "title",
+          "title": {}
+        },
+        "Type": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Mot de passe", "color": "red"},
+              {"name": "Document officiel", "color": "blue"},
+              {"name": "Abonnement", "color": "yellow"},
+              {"name": "MFA/2FA", "color": "green"},
+              {"name": "Backup", "color": "purple"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Catégorie": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Finance", "color": "yellow"},
+              {"name": "Email", "color": "blue"},
+              {"name": "Santé", "color": "green"},
+              {"name": "Admin", "color": "gray"},
+              {"name": "Travail", "color": "purple"},
+              {"name": "Réseaux sociaux", "color": "pink"},
+              {"name": "Cloud", "color": "blue"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Criticité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "🔴 Critique", "color": "red"},
+              {"name": "🟠 Haute", "color": "orange"},
+              {"name": "🟡 Moyenne", "color": "yellow"},
+              {"name": "🟢 Faible", "color": "green"}
+            ]
+          }
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "✅ À jour", "color": "green"},
+              {"name": "⚠️ À renouveler", "color": "yellow"},
+              {"name": "🚨 Expiré", "color": "red"},
+              {"name": "🔒 Désactivé", "color": "gray"}
+            ]
+          }
+        },
+        "Date de création": {
+          "type": "date",
+          "date": {}
+        },
+        "Date de renouvellement": {
+          "type": "date",
+          "date": {}
+        },
+        "Fréquence de renouvellement": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Mensuel", "color": "blue"},
+              {"name": "Trimestriel", "color": "green"},
+              {"name": "Semestriel", "color": "yellow"},
+              {"name": "Annuel", "color": "orange"},
+              {"name": "Tous les 2 ans", "color": "red"},
+              {"name": "Tous les 5 ans", "color": "purple"},
+              {"name": "Tous les 10 ans", "color": "pink"},
+              {"name": "N/A", "color": "gray"}
+            ]
+          }
+        },
+        "Dernière mise à jour": {
+          "type": "date",
+          "date": {}
+        },
+        "MFA activé": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Type MFA": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "App (Authenticator)", "color": "green"},
+              {"name": "SMS", "color": "yellow"},
+              {"name": "Email", "color": "blue"},
+              {"name": "Clé physique", "color": "purple"},
+              {"name": "Biométrie", "color": "pink"},
+              {"name": "N/A", "color": "gray"}
+            ]
+          }
+        },
+        "Email associé": {
+          "type": "email",
+          "email": {}
+        },
+        "Téléphone associé": {
+          "type": "phone_number",
+          "phone_number": {}
+        },
+        "Login/Identifiant": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Lieu de stockage MDP": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1Password", "color": "blue"},
+              {"name": "Bitwarden", "color": "green"},
+              {"name": "LastPass", "color": "red"},
+              {"name": "KeePass", "color": "yellow"},
+              {"name": "Autre gestionnaire", "color": "gray"},
+              {"name": "N/A", "color": "gray"}
+            ]
+          }
+        },
+        "Lieu stockage document": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Coffre physique", "color": "gray"},
+              {"name": "Drive", "color": "blue"},
+              {"name": "iCloud", "color": "purple"},
+              {"name": "Dropbox", "color": "blue"},
+              {"name": "Cloud perso", "color": "green"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Backup disponible": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Actions requises": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Coût": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Fournisseur": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Numéro de référence": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Contact support": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Dernière vérification": {
+          "type": "date",
+          "date": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Crisis_Checklist": {
+      "title": "🚨 Checklist de Crise",
+      "description": "Checklist d'actions en cas de crise",
+      "properties": {
+        "Type de crise": {
+          "type": "title",
+          "title": {}
+        },
+        "Catégorie": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Vol/Perte", "color": "red"},
+              {"name": "Hack/Sécurité", "color": "orange"},
+              {"name": "Accident", "color": "yellow"},
+              {"name": "Urgence médicale", "color": "green"},
+              {"name": "Urgence financière", "color": "blue"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Niveau de gravité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "🔴 Critique", "color": "red"},
+              {"name": "🟠 Haute", "color": "orange"},
+              {"name": "🟡 Moyenne", "color": "yellow"}
+            ]
+          }
+        },
+        "Checklist d'actions": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Ordre de priorité": {
+          "type": "number",
+          "number": {}
+        },
+        "Contacts d'urgence": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Numéros à appeler": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Documents nécessaires": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Liens utiles": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Temps de réaction max": {
+          "type": "number",
+          "number": {}
+        },
+        "Déjà utilisé": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Dernière activation": {
+          "type": "date",
+          "date": {}
+        },
+        "Historique": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Mise à jour le": {
+          "type": "last_edited_time",
+          "last_edited_time": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Workouts": {
+      "title": "💪 Entraînements",
+      "description": "Suivi des entraînements avec synchronisation Strava",
+      "properties": {
+        "Titre": {
+          "type": "title",
+          "title": {}
+        },
+        "Date": {
+          "type": "date",
+          "date": {}
+        },
+        "Type d'activité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Course", "color": "red"},
+              {"name": "Vélo", "color": "blue"},
+              {"name": "Natation", "color": "blue"},
+              {"name": "Gym/Musculation", "color": "orange"},
+              {"name": "Spinning", "color": "yellow"},
+              {"name": "Yoga", "color": "green"},
+              {"name": "Randonnée", "color": "brown"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Sous-type": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Endurance", "color": "blue"},
+              {"name": "Fractionné", "color": "red"},
+              {"name": "Seuil", "color": "orange"},
+              {"name": "Récupération", "color": "green"},
+              {"name": "Force", "color": "purple"},
+              {"name": "Cardio", "color": "red"},
+              {"name": "Mobilité", "color": "yellow"}
+            ]
+          }
+        },
+        "Durée (min)": {
+          "type": "number",
+          "number": {}
+        },
+        "Distance (km)": {
+          "type": "number",
+          "number": {}
+        },
+        "Dénivelé positif (m)": {
+          "type": "number",
+          "number": {}
+        },
+        "Fréquence cardiaque moyenne": {
+          "type": "number",
+          "number": {}
+        },
+        "Fréquence cardiaque max": {
+          "type": "number",
+          "number": {}
+        },
+        "Calories": {
+          "type": "number",
+          "number": {}
+        },
+        "Effort perçu (RPE 1-10)": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1", "color": "green"},
+              {"name": "2", "color": "green"},
+              {"name": "3", "color": "blue"},
+              {"name": "4", "color": "blue"},
+              {"name": "5", "color": "yellow"},
+              {"name": "6", "color": "yellow"},
+              {"name": "7", "color": "orange"},
+              {"name": "8", "color": "orange"},
+              {"name": "9", "color": "red"},
+              {"name": "10", "color": "red"}
+            ]
+          }
+        },
+        "Ressenti": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Excellent", "color": "green"},
+              {"name": "Bon", "color": "blue"},
+              {"name": "Moyen", "color": "yellow"},
+              {"name": "Difficile", "color": "orange"},
+              {"name": "Très difficile", "color": "red"}
+            ]
+          }
+        },
+        "Météo": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Ensoleillé", "color": "yellow"},
+              {"name": "Nuageux", "color": "gray"},
+              {"name": "Pluie", "color": "blue"},
+              {"name": "Neige", "color": "blue"},
+              {"name": "Vent", "color": "gray"},
+              {"name": "Chaud", "color": "red"},
+              {"name": "Froid", "color": "blue"}
+            ]
+          }
+        },
+        "Lieu": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Équipement": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Avec partenaire": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Douleur / Blessure": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Aucune", "color": "green"},
+              {"name": "Légère", "color": "yellow"},
+              {"name": "Modérée", "color": "orange"},
+              {"name": "Importante", "color": "red"}
+            ]
+          }
+        },
+        "Zone de douleur": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Conditions": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Performance": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Strava Activity ID": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Strava URL": {
+          "type": "url",
+          "url": {}
+        },
+        "Synchro Strava": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Entraînement planifié": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Health_Metrics": {
+      "title": "🏥 Métriques Santé",
+      "description": "Suivi des métriques de santé quotidiennes",
+      "properties": {
+        "Date": {
+          "type": "title",
+          "title": {}
+        },
+        "Poids (kg)": {
+          "type": "number",
+          "number": {}
+        },
+        "Sommeil (h)": {
+          "type": "number",
+          "number": {}
+        },
+        "Qualité sommeil (1-10)": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1", "color": "red"},
+              {"name": "2", "color": "red"},
+              {"name": "3", "color": "orange"},
+              {"name": "4", "color": "orange"},
+              {"name": "5", "color": "yellow"},
+              {"name": "6", "color": "yellow"},
+              {"name": "7", "color": "green"},
+              {"name": "8", "color": "green"},
+              {"name": "9", "color": "blue"},
+              {"name": "10", "color": "blue"}
+            ]
+          }
+        },
+        "Heure coucher": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Heure réveil": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Siestes (min)": {
+          "type": "number",
+          "number": {}
+        },
+        "Hydratation (L)": {
+          "type": "number",
+          "number": {}
+        },
+        "Humeur": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Excellente", "color": "green"},
+              {"name": "Bonne", "color": "blue"},
+              {"name": "Neutre", "color": "yellow"},
+              {"name": "Mauvaise", "color": "orange"},
+              {"name": "Très mauvaise", "color": "red"}
+            ]
+          }
+        },
+        "Niveau d'énergie (1-10)": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1", "color": "red"},
+              {"name": "2", "color": "red"},
+              {"name": "3", "color": "orange"},
+              {"name": "4", "color": "orange"},
+              {"name": "5", "color": "yellow"},
+              {"name": "6", "color": "yellow"},
+              {"name": "7", "color": "green"},
+              {"name": "8", "color": "green"},
+              {"name": "9", "color": "blue"},
+              {"name": "10", "color": "blue"}
+            ]
+          }
+        },
+        "Niveau de stress (1-10)": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1", "color": "green"},
+              {"name": "2", "color": "green"},
+              {"name": "3", "color": "blue"},
+              {"name": "4", "color": "blue"},
+              {"name": "5", "color": "yellow"},
+              {"name": "6", "color": "yellow"},
+              {"name": "7", "color": "orange"},
+              {"name": "8", "color": "orange"},
+              {"name": "9", "color": "red"},
+              {"name": "10", "color": "red"}
+            ]
+          }
+        },
+        "Douleur présente": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Zone(s) de douleur": {
+          "type": "multi_select",
+          "multi_select": {
+            "options": [
+              {"name": "Tête", "color": "red"},
+              {"name": "Dos", "color": "orange"},
+              {"name": "Épaules", "color": "yellow"},
+              {"name": "Genoux", "color": "blue"},
+              {"name": "Hanches", "color": "purple"},
+              {"name": "Pieds", "color": "green"},
+              {"name": "Mains", "color": "pink"},
+              {"name": "Abdomen", "color": "brown"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Intensité douleur (1-10)": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1", "color": "green"},
+              {"name": "2", "color": "green"},
+              {"name": "3", "color": "blue"},
+              {"name": "4", "color": "blue"},
+              {"name": "5", "color": "yellow"},
+              {"name": "6", "color": "yellow"},
+              {"name": "7", "color": "orange"},
+              {"name": "8", "color": "orange"},
+              {"name": "9", "color": "red"},
+              {"name": "10", "color": "red"}
+            ]
+          }
+        },
+        "Médicaments pris": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Suppléments": {
+          "type": "multi_select",
+          "multi_select": {
+            "options": [
+              {"name": "Vitamines", "color": "yellow"},
+              {"name": "Protéines", "color": "blue"},
+              {"name": "Créatine", "color": "red"},
+              {"name": "Oméga-3", "color": "blue"},
+              {"name": "Magnésium", "color": "green"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Repas équilibrés": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Alcool": {
+          "type": "number",
+          "number": {}
+        },
+        "Café/Caféine": {
+          "type": "number",
+          "number": {}
+        },
+        "Tabac": {
+          "type": "number",
+          "number": {}
+        },
+        "Température corporelle (°C)": {
+          "type": "number",
+          "number": {}
+        },
+        "Tension artérielle": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Fréquence cardiaque repos": {
+          "type": "number",
+          "number": {}
+        },
+        "Menstruation": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Symptômes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Gratitude du jour": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Sport_Goals": {
+      "title": "🎯 Objectifs Sportifs",
+      "description": "Objectifs sportifs et protocoles de progression",
+      "properties": {
+        "Objectif": {
+          "type": "title",
+          "title": {}
+        },
+        "Type d'activité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Course", "color": "red"},
+              {"name": "Vélo", "color": "blue"},
+              {"name": "Natation", "color": "blue"},
+              {"name": "Gym/Musculation", "color": "orange"},
+              {"name": "Spinning", "color": "yellow"},
+              {"name": "Yoga", "color": "green"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Catégorie": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Performance", "color": "red"},
+              {"name": "Endurance", "color": "blue"},
+              {"name": "Force", "color": "orange"},
+              {"name": "Souplesse", "color": "green"},
+              {"name": "Perte de poids", "color": "yellow"},
+              {"name": "Santé générale", "color": "purple"}
+            ]
+          }
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "🎯 En cours", "color": "blue"},
+              {"name": "✅ Atteint", "color": "green"},
+              {"name": "🟡 En pause", "color": "yellow"},
+              {"name": "❌ Abandonné", "color": "red"}
+            ]
+          }
+        },
+        "Priorité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "P1 - Critique", "color": "red"},
+              {"name": "P2 - Haute", "color": "orange"},
+              {"name": "P3 - Moyenne", "color": "yellow"},
+              {"name": "P4 - Faible", "color": "green"}
+            ]
+          }
+        },
+        "Date de début": {
+          "type": "date",
+          "date": {}
+        },
+        "Date cible": {
+          "type": "date",
+          "date": {}
+        },
+        "Date d'atteinte": {
+          "type": "date",
+          "date": {}
+        },
+        "Valeur de départ": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Valeur cible": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Valeur actuelle": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "% Progression": {
+          "type": "number",
+          "number": {
+            "format": "percent"
+          }
+        },
+        "Métrique de suivi": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Protocole": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Fréquence entraînement": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1x/semaine", "color": "gray"},
+              {"name": "2x/semaine", "color": "blue"},
+              {"name": "3x/semaine", "color": "green"},
+              {"name": "4x/semaine", "color": "yellow"},
+              {"name": "5x/semaine", "color": "orange"},
+              {"name": "6x/semaine", "color": "red"},
+              {"name": "Quotidien", "color": "purple"}
+            ]
+          }
+        },
+        "Obstacles rencontrés": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Ajustements faits": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Ressources": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        },
+        "Dernière mise à jour": {
+          "type": "last_edited_time",
+          "last_edited_time": {}
+        }
+      }
+    },
+    "Finance_Transactions": {
+      "title": "💰 Transactions",
+      "description": "Suivi de toutes les transactions financières",
+      "properties": {
+        "Description": {
+          "type": "title",
+          "title": {}
+        },
+        "Date": {
+          "type": "date",
+          "date": {}
+        },
+        "Type": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Revenu", "color": "green"},
+              {"name": "Dépense", "color": "red"},
+              {"name": "Épargne", "color": "blue"},
+              {"name": "Investissement", "color": "purple"},
+              {"name": "Remboursement", "color": "yellow"}
+            ]
+          }
+        },
+        "Montant (€)": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Catégorie": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Salaire", "color": "green"},
+              {"name": "Alimentation", "color": "orange"},
+              {"name": "Transport", "color": "blue"},
+              {"name": "Logement", "color": "brown"},
+              {"name": "Loisirs", "color": "pink"},
+              {"name": "Santé", "color": "red"},
+              {"name": "Formation", "color": "purple"},
+              {"name": "Abonnements", "color": "yellow"},
+              {"name": "Vêtements", "color": "purple"},
+              {"name": "Cadeaux", "color": "pink"},
+              {"name": "Impôts", "color": "gray"},
+              {"name": "Épargne", "color": "blue"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Sous-catégorie": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Compte": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Compte courant", "color": "blue"},
+              {"name": "Compte épargne", "color": "green"},
+              {"name": "Livret A", "color": "yellow"},
+              {"name": "PEL", "color": "orange"},
+              {"name": "Assurance vie", "color": "purple"},
+              {"name": "Compte titre", "color": "red"},
+              {"name": "Cash", "color": "gray"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Moyen de paiement": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Carte bancaire", "color": "blue"},
+              {"name": "Virement", "color": "green"},
+              {"name": "Espèces", "color": "gray"},
+              {"name": "Chèque", "color": "yellow"},
+              {"name": "Prélèvement", "color": "orange"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Récurrent": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Fréquence": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Mensuel", "color": "blue"},
+              {"name": "Trimestriel", "color": "green"},
+              {"name": "Semestriel", "color": "yellow"},
+              {"name": "Annuel", "color": "orange"},
+              {"name": "N/A", "color": "gray"}
+            ]
+          }
+        },
+        "Prochaine occurrence": {
+          "type": "date",
+          "date": {}
+        },
+        "Validé": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Obligatoire": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Fournisseur/Source": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Facture/Reçu": {
+          "type": "files",
+          "files": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Tags": {
+          "type": "multi_select",
+          "multi_select": {
+            "options": []
+          }
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Finance_Budgets": {
+      "title": "📊 Budgets",
+      "description": "Budgets mensuels par catégorie",
+      "properties": {
+        "Budget": {
+          "type": "title",
+          "title": {}
+        },
+        "Mois": {
+          "type": "date",
+          "date": {}
+        },
+        "Catégorie": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Alimentation", "color": "orange"},
+              {"name": "Transport", "color": "blue"},
+              {"name": "Logement", "color": "brown"},
+              {"name": "Loisirs", "color": "pink"},
+              {"name": "Santé", "color": "red"},
+              {"name": "Formation", "color": "purple"},
+              {"name": "Abonnements", "color": "yellow"},
+              {"name": "Vêtements", "color": "purple"},
+              {"name": "Cadeaux", "color": "pink"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Montant alloué (€)": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Obligatoire": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Objectif": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Alerte activée": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Seuil alerte (%)": {
+          "type": "number",
+          "number": {
+            "format": "percent"
+          }
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Patrimoine": {
+      "title": "💎 Patrimoine",
+      "description": "Suivi du patrimoine net (actifs - passifs)",
+      "properties": {
+        "Nom": {
+          "type": "title",
+          "title": {}
+        },
+        "Type": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Actif", "color": "green"},
+              {"name": "Passif", "color": "red"}
+            ]
+          }
+        },
+        "Catégorie": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Compte bancaire", "color": "blue"},
+              {"name": "Épargne", "color": "green"},
+              {"name": "Investissement", "color": "purple"},
+              {"name": "Bien immobilier", "color": "brown"},
+              {"name": "Véhicule", "color": "orange"},
+              {"name": "Crédit", "color": "red"},
+              {"name": "Prêt", "color": "yellow"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Valeur actuelle (€)": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Date d'acquisition": {
+          "type": "date",
+          "date": {}
+        },
+        "Valeur d'acquisition (€)": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Dernière mise à jour valeur": {
+          "type": "date",
+          "date": {}
+        },
+        "Liquidité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Immédiate", "color": "green"},
+              {"name": "Court terme (< 1 mois)", "color": "blue"},
+              {"name": "Moyen terme (< 1 an)", "color": "yellow"},
+              {"name": "Long terme (> 1 an)", "color": "orange"},
+              {"name": "Illiquide", "color": "red"}
+            ]
+          }
+        },
+        "Institution": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Numéro de compte": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Taux d'intérêt (%)": {
+          "type": "number",
+          "number": {
+            "format": "percent"
+          }
+        },
+        "Échéance": {
+          "type": "date",
+          "date": {}
+        },
+        "Mensualité (€)": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Restant dû (€)": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Rendement annuel (%)": {
+          "type": "number",
+          "number": {
+            "format": "percent"
+          }
+        },
+        "Frais annuels (€)": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Objectif": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Documents": {
+          "type": "files",
+          "files": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Goals_LongTerm": {
+      "title": "🗺️ Objectifs Long Terme",
+      "description": "Objectifs à moyen et long terme (1 an, 3 ans, 5 ans)",
+      "properties": {
+        "Objectif": {
+          "type": "title",
+          "title": {}
+        },
+        "Horizon": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "1 an", "color": "blue"},
+              {"name": "3 ans", "color": "green"},
+              {"name": "5 ans", "color": "purple"}
+            ]
+          }
+        },
+        "Catégorie": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Carrière", "color": "blue"},
+              {"name": "Personnel", "color": "purple"},
+              {"name": "Santé", "color": "green"},
+              {"name": "Finance", "color": "yellow"},
+              {"name": "Relationnel", "color": "pink"},
+              {"name": "Formation", "color": "orange"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "🎯 En cours", "color": "blue"},
+              {"name": "✅ Atteint", "color": "green"},
+              {"name": "🟡 En pause", "color": "yellow"},
+              {"name": "🔄 À revoir", "color": "orange"},
+              {"name": "❌ Abandonné", "color": "red"}
+            ]
+          }
+        },
+        "Priorité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "P1 - Critique", "color": "red"},
+              {"name": "P2 - Haute", "color": "orange"},
+              {"name": "P3 - Moyenne", "color": "yellow"},
+              {"name": "P4 - Faible", "color": "green"}
+            ]
+          }
+        },
+        "Date de début": {
+          "type": "date",
+          "date": {}
+        },
+        "Date cible": {
+          "type": "date",
+          "date": {}
+        },
+        "Date d'atteinte": {
+          "type": "date",
+          "date": {}
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Pourquoi": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Vision de succès": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Critères de succès": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "% Progression": {
+          "type": "number",
+          "number": {
+            "format": "percent"
+          }
+        },
+        "Métrique principale": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Valeur de départ": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Valeur cible": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Valeur actuelle": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Milestones": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Prochaine étape": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Obstacles": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Ressources nécessaires": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Personnes clés": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Investissement (€)": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "ROI attendu": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Revue trimestrielle": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Dernière revue": {
+          "type": "date",
+          "date": {}
+        },
+        "Notes revue": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Ajustements faits": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Apprentissages": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        },
+        "Dernière mise à jour": {
+          "type": "last_edited_time",
+          "last_edited_time": {}
+        }
+      }
+    },
+    "Roadmap": {
+      "title": "🛣️ Roadmap",
+      "description": "Planification stratégique sous forme de roadmap avec milestones",
+      "properties": {
+        "Milestone": {
+          "type": "title",
+          "title": {}
+        },
+        "Trimestre": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Q1 2025", "color": "blue"},
+              {"name": "Q2 2025", "color": "green"},
+              {"name": "Q3 2025", "color": "yellow"},
+              {"name": "Q4 2025", "color": "orange"},
+              {"name": "Q1 2026", "color": "purple"},
+              {"name": "Q2 2026", "color": "pink"},
+              {"name": "Q3 2026", "color": "red"},
+              {"name": "Q4 2026", "color": "brown"}
+            ]
+          }
+        },
+        "Année": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "2025", "color": "blue"},
+              {"name": "2026", "color": "green"},
+              {"name": "2027", "color": "yellow"},
+              {"name": "2028", "color": "orange"},
+              {"name": "2029", "color": "purple"},
+              {"name": "2030", "color": "pink"}
+            ]
+          }
+        },
+        "Date cible": {
+          "type": "date",
+          "date": {}
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "📝 Planifié", "color": "gray"},
+              {"name": "🟦 En cours", "color": "blue"},
+              {"name": "✅ Atteint", "color": "green"},
+              {"name": "🟡 En retard", "color": "yellow"},
+              {"name": "❌ Non atteint", "color": "red"}
+            ]
+          }
+        },
+        "Type": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Projet majeur", "color": "red"},
+              {"name": "Compétence", "color": "blue"},
+              {"name": "Objectif financier", "color": "yellow"},
+              {"name": "Objectif santé", "color": "green"},
+              {"name": "Événement", "color": "purple"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Domaine": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Carrière", "color": "blue"},
+              {"name": "Personnel", "color": "purple"},
+              {"name": "Santé", "color": "green"},
+              {"name": "Finance", "color": "yellow"},
+              {"name": "Formation", "color": "orange"},
+              {"name": "Relationnel", "color": "pink"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Critère de validation": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Impact": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "🔴 Majeur", "color": "red"},
+              {"name": "🟠 Important", "color": "orange"},
+              {"name": "🟡 Moyen", "color": "yellow"},
+              {"name": "🟢 Mineur", "color": "green"}
+            ]
+          }
+        },
+        "Priorité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "P1 - Critique", "color": "red"},
+              {"name": "P2 - Haute", "color": "orange"},
+              {"name": "P3 - Moyenne", "color": "yellow"},
+              {"name": "P4 - Faible", "color": "green"}
+            ]
+          }
+        },
+        "Risques": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Plan B": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Ressources nécessaires": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Budget (€)": {
+          "type": "number",
+          "number": {
+            "format": "euro"
+          }
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Date d'atteinte réelle": {
+          "type": "date",
+          "date": {}
+        },
+        "Leçons apprises": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        }
+      }
+    },
+    "Calendar_Master": {
+      "title": "📅 Calendrier",
+      "description": "Calendrier centralisé qui agrège tous les événements",
+      "properties": {
+        "Titre": {
+          "type": "title",
+          "title": {}
+        },
+        "Date": {
+          "type": "date",
+          "date": {}
+        },
+        "Type d'événement": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Tâche", "color": "blue"},
+              {"name": "Deadline", "color": "red"},
+              {"name": "Routine", "color": "green"},
+              {"name": "Entraînement", "color": "orange"},
+              {"name": "Renouvellement sécurité", "color": "purple"},
+              {"name": "Échéance financière", "color": "yellow"},
+              {"name": "Rendez-vous", "color": "pink"},
+              {"name": "Événement perso", "color": "purple"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Source": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Tasks", "color": "blue"},
+              {"name": "Projects", "color": "green"},
+              {"name": "Routines", "color": "yellow"},
+              {"name": "Workouts", "color": "orange"},
+              {"name": "Security_Items", "color": "purple"},
+              {"name": "Finance", "color": "yellow"},
+              {"name": "Google Calendar", "color": "red"},
+              {"name": "Manuel", "color": "gray"},
+              {"name": "Autre", "color": "gray"}
+            ]
+          }
+        },
+        "Statut": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "📅 À venir", "color": "gray"},
+              {"name": "🟦 En cours", "color": "blue"},
+              {"name": "✅ Fait", "color": "green"},
+              {"name": "❌ Annulé", "color": "red"},
+              {"name": "⏸️ Reporté", "color": "yellow"}
+            ]
+          }
+        },
+        "Priorité": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "P1 - Critique", "color": "red"},
+              {"name": "P2 - Haute", "color": "orange"},
+              {"name": "P3 - Moyenne", "color": "yellow"},
+              {"name": "P4 - Faible", "color": "green"}
+            ]
+          }
+        },
+        "Durée (min)": {
+          "type": "number",
+          "number": {}
+        },
+        "Rappel": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Aucun", "color": "gray"},
+              {"name": "15 min avant", "color": "blue"},
+              {"name": "1h avant", "color": "green"},
+              {"name": "1 jour avant", "color": "yellow"},
+              {"name": "1 semaine avant", "color": "orange"}
+            ]
+          }
+        },
+        "Google Calendar Event ID": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Synchro Google Calendar": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Lieu": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Participants": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Lien visio": {
+          "type": "url",
+          "url": {}
+        },
+        "Description": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Notes": {
+          "type": "rich_text",
+          "rich_text": {}
+        },
+        "Couleur": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Rouge", "color": "red"},
+              {"name": "Orange", "color": "orange"},
+              {"name": "Jaune", "color": "yellow"},
+              {"name": "Vert", "color": "green"},
+              {"name": "Bleu", "color": "blue"},
+              {"name": "Violet", "color": "purple"},
+              {"name": "Gris", "color": "gray"}
+            ]
+          }
+        },
+        "Récurrent": {
+          "type": "checkbox",
+          "checkbox": {}
+        },
+        "Fréquence récurrence": {
+          "type": "select",
+          "select": {
+            "options": [
+              {"name": "Quotidien", "color": "blue"},
+              {"name": "Hebdomadaire", "color": "green"},
+              {"name": "Mensuel", "color": "yellow"},
+              {"name": "Annuel", "color": "orange"}
+            ]
+          }
+        },
+        "Créé le": {
+          "type": "created_time",
+          "created_time": {}
+        },
+        "Dernière modification": {
+          "type": "last_edited_time",
+          "last_edited_time": {}
+        }
+      }
+    }
+  }
+}

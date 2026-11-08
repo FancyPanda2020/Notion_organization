@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dashboard Sport</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f4f3ef;
+    --surface-1: #fcfcfb;
+    --surface-2: #efeee9;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #6f6e68;
+    --grid: #e4e3de;
+    --border: #dcdbd5;
+    --good: #0a7d3c;
+    --bad: #c4321f;
+    --s-course: #2a78d6; --s-velo: #eb6834; --s-nage: #1baf7a; --s-gym: #eda100;
+    --s-spin: #e87ba4;  --s-yoga: #008300; --s-rando: #6250d6; --s-autre: #8a8985;
+    --seq-0: #e9e8e3; --seq-1: #cde2fb; --seq-2: #86b6ef; --seq-3: #3987e5; --seq-4: #1c5cab; --seq-5: #0d366b;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:where(:not([data-theme="light"])) {
+      color-scheme: dark;
+      --page: #111110; --surface-1: #1a1a19; --surface-2: #242423;
+      --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #95948b;
+      --grid: #2c2c2a; --border: #353533; --good: #4cc47f; --bad: #ef7b6b;
+      --s-course: #3987e5; --s-velo: #d95926; --s-nage: #199e70; --s-gym: #c98500;
+      --s-spin: #d55181;  --s-yoga: #008300; --s-rando: #9085e9; --s-autre: #77766f;
+      --seq-0: #262625; --seq-1: #104281; --seq-2: #1c5cab; --seq-3: #2a78d6; --seq-4: #5598e7; --seq-5: #9ec5f4;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #111110; --surface-1: #1a1a19; --surface-2: #242423;
+    --text-primary: #f0efec; --text-secondary: #c3c2b7; --text-muted: #95948b;
+    --grid: #2c2c2a; --border: #353533; --good: #4cc47f; --bad: #ef7b6b;
+    --s-course: #3987e5; --s-velo: #d95926; --s-nage: #199e70; --s-gym: #c98500;
+    --s-spin: #d55181;  --s-yoga: #008300; --s-rando: #9085e9; --s-autre: #77766f;
+    --seq-0: #262625; --seq-1: #104281; --seq-2: #1c5cab; --seq-3: #2a78d6; --seq-4: #5598e7; --seq-5: #9ec5f4;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--text-primary);
+    font: 14px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 24px 16px 64px; }
+  header h1 { font-size: 22px; margin: 0 0 4px; font-weight: 650; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--text-secondary); font-size: 13px; }
+  .banner { background: var(--surface-2); border: 1px solid var(--border); border-radius: 8px;
+            padding: 8px 12px; margin-top: 12px; font-size: 13px; color: var(--text-secondary); }
+
+  .filters { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center;
+             margin: 20px 0 16px; padding: 12px 14px; background: var(--surface-1);
+             border: 1px solid var(--border); border-radius: 10px; position: sticky; top: 8px; z-index: 5; }
+  .filters label { font-size: 12px; color: var(--text-muted); display: flex; flex-direction: column; gap: 4px; }
+  select {
+    font: inherit; padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border);
+    background: var(--surface-1); color: var(--text-primary); min-width: 150px;
+  }
+  .seg { display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .seg button {
+    font: inherit; border: 0; background: var(--surface-1); color: var(--text-secondary);
+    padding: 6px 14px; cursor: pointer; border-right: 1px solid var(--border);
+  }
+  .seg button:last-child { border-right: 0; }
+  .seg button[aria-pressed="true"] { background: var(--text-primary); color: var(--surface-1); }
+  button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--s-course); outline-offset: 2px; }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .kpi { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .kpi .lbl { font-size: 12px; color: var(--text-muted); }
+  .kpi .val { font-size: 26px; font-weight: 650; letter-spacing: -0.02em; margin: 2px 0; font-variant-numeric: tabular-nums; }
+  .kpi .delta { font-size: 12px; color: var(--text-secondary); }
+  .delta .up { color: var(--good); } .delta .down { color: var(--bad); }
+
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+  .card { background: var(--surface-1); border: 1px solid var(--border); border-radius: 10px; padding: 16px; min-width: 0; }
+  .card.wide { grid-column: 1 / -1; }
+  .card h2 { font-size: 15px; margin: 0 0 2px; font-weight: 650; }
+  .card .sub { margin: 0 0 12px; color: var(--text-secondary); font-size: 12.5px; }
+  .chart { position: relative; height: 300px; }
+  .chart.tall { height: 340px; }
+  .note { margin: 10px 0 0; color: var(--text-muted); font-size: 12px; }
+  .empty { color: var(--text-muted); padding: 24px 0; text-align: center; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 12px; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border: 1px solid var(--border);
+          border-radius: 999px; cursor: pointer; user-select: none; font-size: 13px; }
+  .chip input { margin: 0; }
+  .chip .dot { width: 10px; height: 10px; border-radius: 50%; }
+
+  table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; font-size: 13px; }
+  th, td { text-align: right; padding: 6px 8px; border-bottom: 1px solid var(--grid); }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--text-muted); font-weight: 600; font-size: 12px; }
+  details { margin-top: 10px; }
+  summary { cursor: pointer; color: var(--text-secondary); font-size: 13px; }
+  .tablewrap { max-height: 280px; overflow: auto; margin-top: 8px; }
+
+  .records { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+  .records li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--grid); }
+  .records .r-lbl { color: var(--text-secondary); }
+  .records .r-val { font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; }
+  .records .r-sub { display: block; font-weight: 400; color: var(--text-muted); font-size: 12px; }
+
+  .heat { overflow-x: auto; }
+  .heat svg { display: block; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 0 0 10px; font-size: 12.5px; color: var(--text-secondary); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  #tip { position: fixed; pointer-events: none; background: var(--text-primary); color: var(--surface-1);
+         padding: 6px 9px; border-radius: 6px; font-size: 12px; opacity: 0; transition: opacity .08s; z-index: 20; white-space: nowrap; }
+  .stats3 { display: flex; gap: 20px; flex-wrap: wrap; margin: 0 0 10px; }
+  .stats3 div { font-size: 12px; color: var(--text-muted); }
+  .stats3 b { display: block; font-size: 18px; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } .filters { position: static; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Dashboard Sport</h1>
+    <p id="meta"></p>
+    <div id="demo-banner" class="banner" hidden>Données de démonstration (fictives). Lancez le script sans <code>--demo</code> pour afficher vos entraînements Notion.</div>
+  </header>
+
+  <div class="filters" role="group" aria-label="Filtres">
+    <label>Sport
+      <select id="f-sport"></select>
+    </label>
+    <label>Regroupement
+      <span class="seg" id="f-g">
+        <button data-v="week" aria-pressed="true">Semaine</button>
+        <button data-v="month" aria-pressed="false">Mois</button>
+        <button data-v="year" aria-pressed="false">Année</button>
+      </span>
+    </label>
+    <label>Indicateur
+      <select id="f-metric"></select>
+    </label>
+  </div>
+
+  <section class="kpis" id="kpis" aria-label="Indicateurs clés"></section>
+
+  <div class="grid">
+    <section class="card wide">
+      <h2 id="t-bucket"></h2>
+      <p class="sub" id="s-bucket"></p>
+      <div class="legend" id="lg-bucket"></div>
+      <div class="chart tall"><canvas id="c-bucket" role="img" aria-label="Évolution de l'indicateur par période"></canvas></div>
+      <details><summary>Voir en tableau</summary><div class="tablewrap" id="tbl-bucket"></div></details>
+    </section>
+
+    <section class="card wide">
+      <h2>Comparer les années</h2>
+      <p class="sub" id="s-yoy"></p>
+      <div class="chips" id="chips-years"></div>
+      <div class="chart"><canvas id="c-yoy" role="img" aria-label="Cumul de l'indicateur au fil de l'année, une courbe par année"></canvas></div>
+      <details open><summary>Totaux mensuels par année</summary><div class="tablewrap" id="tbl-yoy"></div></details>
+    </section>
+
+    <section class="card">
+      <h2>Répartition par sport</h2>
+      <p class="sub" id="s-split"></p>
+      <div class="chart"><canvas id="c-split" role="img" aria-label="Répartition de l'indicateur par sport"></canvas></div>
+    </section>
+
+    <section class="card">
+      <h2 id="t-pace">Allure et vitesse</h2>
+      <p class="sub" id="s-pace"></p>
+      <div class="chart"><canvas id="c-pace" role="img" aria-label="Évolution de l'allure ou de la vitesse"></canvas></div>
+      <p class="empty" id="e-pace" hidden></p>
+    </section>
+
+    <section class="card wide">
+      <h2>Forme, fatigue et prévision</h2>
+      <p class="sub">Charge = durée x effort perçu (RPE, 5 par défaut). Forme de fond : moyenne mobile 42 jours. Fatigue : moyenne mobile 7 jours. La partie pointillée est une projection.</p>
+      <div class="filters" style="position:static;margin:0 0 12px;padding:8px 10px;box-shadow:none">
+        <label>Scénario des 14 prochains jours
+          <select id="f-scn">
+            <option value="1">Rythme actuel (moyenne des 28 derniers jours)</option>
+            <option value="1.15">Charge augmentée de 15 %</option>
+            <option value="0.6">Charge réduite de 40 %</option>
+            <option value="0">Repos complet</option>
+          </select>
+        </label>
+      </div>
+      <div class="stats3" id="load-stats"></div>
+      <div class="chart"><canvas id="c-load" role="img" aria-label="Forme de fond et fatigue, avec projection à 14 jours"></canvas></div>
+    </section>
+
+    <section class="card">
+      <h2>Prévisions de performance (course à pied)</h2>
+      <p class="sub">Estimées avec la formule de Riegel à partir de vos meilleures sorties des 120 derniers jours, puis extrapolées sur 3 mois.</p>
+      <div id="predict"></div>
+      <p class="note">Estimation prudente : l'allure moyenne d'une sortie d'entraînement est inférieure à votre allure de course. La tendance est une régression linéaire sur vos meilleurs mois ; elle n'a qu'une valeur indicative.</p>
+    </section>
+
+    <section class="card">
+      <h2>Records</h2>
+      <p class="sub" id="s-records"></p>
+      <ul class="records" id="records"></ul>
+    </section>
+
+    <section class="card wide">
+      <h2>Régularité sur 53 semaines</h2>
+      <p class="sub" id="s-heat"></p>
+      <div class="heat" id="heat"></div>
+    </section>
+  </div>
+</div>
+<div id="tip" role="tooltip"></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+
+/* ------------------------------------------------------------------ constants */
+const SPORTS = ['Course','Vélo','Natation','Gym/Musculation','Spinning','Yoga','Randonnée','Autre'];
+const SPORT_VAR = {'Course':'--s-course','Vélo':'--s-velo','Natation':'--s-nage','Gym/Musculation':'--s-gym',
+                   'Spinning':'--s-spin','Yoga':'--s-yoga','Randonnée':'--s-rando','Autre':'--s-autre'};
+const MONTHS = ['janv.','févr.','mars','avr.','mai','juin','juil.','août','sept.','oct.','nov.','déc.'];
+const MONTHS_LONG = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','décembre'];
+
+const fmtHM = h => { const t = Math.round(h * 60); return Math.floor(t / 60) + ' h ' + String(t % 60).padStart(2, '0'); };
+const fmtPace = p => { if (!isFinite(p) || p <= 0) return '–'; let m = Math.floor(p), s = Math.round((p - m) * 60); if (s === 60) { m++; s = 0; } return m + ':' + String(s).padStart(2, '0') + ' /km'; };
+const fmtTime = sec => { sec = Math.round(sec); const h = Math.floor(sec / 3600), m = Math.floor(sec % 3600 / 60), s = sec % 60;
+  return h ? `${h}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}` : `${m}:${String(s).padStart(2,'0')}`; };
+const nf = (v, d = 0) => v.toLocaleString('fr-FR', { maximumFractionDigits: d, minimumFractionDigits: d });
+
+const METRICS = {
+  km:   { label: 'Distance', f: w => w.km || 0,  fmt: v => nf(v, 1) + ' km' },
+  h:    { label: 'Durée',    f: w => (w.min || 0) / 60, fmt: fmtHM },
+  n:    { label: 'Nombre de séances', f: () => 1, fmt: v => nf(v) },
+  el:   { label: 'Dénivelé positif', f: w => w.el || 0, fmt: v => nf(v) + ' m' },
+  load: { label: 'Charge d\'entraînement', f: w => (w.min || 0) * (w.rpe || 5), fmt: v => nf(v) + ' u.a.' }
+};
+
+/* ------------------------------------------------------------------ dates */
+const parseDate = s => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d, 12); };
+const isoDay = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const mondayOf = d => addDays(d, -((d.getDay() + 6) % 7));
+const isoWeek = d => { const t = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())); const day = t.getUTCDay() || 7;
+  t.setUTCDate(t.getUTCDate() + 4 - day); const y0 = new Date(Date.UTC(t.getUTCFullYear(), 0, 1)); return Math.ceil(((t - y0) / 864e5 + 1) / 7); };
+const today = (() => { const t = new Date(); t.setHours(12, 0, 0, 0); return t; })();
+
+function bucketStart(d, g) {
+  if (g === 'week') return mondayOf(d);
+  if (g === 'month') return new Date(d.getFullYear(), d.getMonth(), 1, 12);
+  return new Date(d.getFullYear(), 0, 1, 12);
+}
+function stepBucket(b, g, k) {
+  if (g === 'week') return addDays(b, 7 * k);
+  if (g === 'month') return new Date(b.getFullYear(), b.getMonth() + k, 1, 12);
+  return new Date(b.getFullYear() + k, 0, 1, 12);
+}
+function bucketLabel(b, g) {
+  if (g === 'week') return 'S' + isoWeek(b);
+  if (g === 'month') return MONTHS[b.getMonth()] + ' ' + String(b.getFullYear()).slice(2);
+  return String(b.getFullYear());
+}
+function bucketTitle(b, g) {
+  if (g === 'week') { const e = addDays(b, 6); return `Semaine ${isoWeek(b)} · du ${b.getDate()} ${MONTHS[b.getMonth()]} au ${e.getDate()} ${MONTHS[e.getMonth()]} ${e.getFullYear()}`; }
+  if (g === 'month') return `${MONTHS_LONG[b.getMonth()]} ${b.getFullYear()}`;
+  return String(b.getFullYear());
+}
+
+/* ------------------------------------------------------------------ data */
+const W = DATA.workouts.map(w => ({ ...w, date: parseDate(w.d) })).sort((a, b) => a.date - b.date);
+const sportsPresent = SPORTS.filter(s => W.some(w => w.s === s));
+W.forEach(w => { if (!SPORTS.includes(w.s)) w.s = 'Autre'; });
+const years = [...new Set(W.map(w => w.date.getFullYear()))].sort();
+
+const state = { sport: 'Tous', g: 'week', metric: 'km', years: years.slice(-2), scn: 1 };
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+const sportColor = s => css(SPORT_VAR[s] || '--s-autre');
+const filtered = () => state.sport === 'Tous' ? W : W.filter(w => w.s === state.sport);
+const M = () => METRICS[state.metric];
+
+/* ------------------------------------------------------------------ helpers */
+const tip = document.getElementById('tip');
+function showTip(ev, html) { tip.innerHTML = html; tip.style.opacity = 1; tip.style.left = Math.min(ev.clientX + 12, innerWidth - tip.offsetWidth - 8) + 'px'; tip.style.top = (ev.clientY + 14) + 'px'; }
+function hideTip() { tip.style.opacity = 0; }
+
+function linreg(ys) {
+  const n = ys.length; let sx = 0, sy = 0, sxy = 0, sxx = 0;
+  ys.forEach((y, x) => { sx += x; sy += y; sxy += x * y; sxx += x * x; });
+  const den = n * sxx - sx * sx; const b = den ? (n * sxy - sx * sy) / den : 0;
+  return { a: (sy - b * sx) / n, b };
+}
+function deltaHTML(cur, prev, inverse = false) {
+  if (!prev) return '<span>–</span>';
+  const p = (cur - prev) / prev * 100; const good = inverse ? p < 0 : p > 0;
+  const arrow = p > 0 ? '▲' : p < 0 ? '▼' : '=';
+  return `<span class="${Math.abs(p) < 0.5 ? '' : good ? 'up' : 'down'}">${arrow} ${nf(Math.abs(p), 0)} %</span>`;
+}
+
+const charts = {};
+function mount(id, cfg) {
+  if (charts[id]) charts[id].destroy();
+  Chart.defaults.font.family = getComputedStyle(document.body).fontFamily;
+  Chart.defaults.font.size = 12;
+  Chart.defaults.color = css('--text-secondary');
+  Chart.defaults.borderColor = css('--grid');
+  charts[id] = new Chart(document.getElementById(id), cfg);
+}
+const axisBase = () => ({ grid: { color: css('--grid'), drawTicks: false }, border: { display: false }, ticks: { color: css('--text-secondary'), padding: 6 } });
+const baseOpts = () => ({ responsive: true, maintainAspectRatio: false, animation: false, interaction: { mode: 'index', intersect: false },
+  plugins: { legend: { display: false }, tooltip: { backgroundColor: css('--text-primary'), titleColor: css('--surface-1'), bodyColor: css('--surface-1'),
+    footerColor: css('--surface-1'), padding: 10, cornerRadius: 6, boxPadding: 4 } } });
+
+/* ------------------------------------------------------------------ KPIs */
+function renderKPIs() {
+  const ws = filtered(), g = state.g;
+  const cb = bucketStart(today, g), pb = stepBucket(cb, g, -1);
+  const inB = (w, b) => bucketStart(w.date, g).getTime() === b.getTime();
+  const elapsed = Math.round((today - cb) / 864e5) + 1;   // jours écoulés dans la période en cours
+  const agg = (b, cut) => { const l = ws.filter(w => inB(w, b) && (!cut || w.date < addDays(b, elapsed))); return { n: l.length, km: sum(l, 'km'), min: sum(l, 'min'), el: sum(l, 'el'), hr: l.filter(w => w.hr), l }; };
+  const c = agg(cb), p = agg(pb, true);
+  const unit = { week: 'cette semaine', month: 'ce mois', year: 'cette année' }[g];
+  const vs = { week: 'même point de la semaine précédente', month: 'même point du mois précédent', year: 'même point de l\'année précédente' }[g];
+  const speed = x => x.min ? x.km / (x.min / 60) : 0, pace = x => x.km ? x.min / x.km : 0;
+  let l5;
+  if (state.sport === 'Course') l5 = { lbl: 'Allure moyenne', val: fmtPace(pace(c)), d: deltaHTML(pace(c), pace(p), true) };
+  else if (state.sport === 'Vélo' || state.sport === 'Spinning') l5 = { lbl: 'Vitesse moyenne', val: c.min ? nf(speed(c), 1) + ' km/h' : '–', d: deltaHTML(speed(c), speed(p)) };
+  else l5 = { lbl: 'Durée moyenne par séance', val: c.n ? fmtHM(c.min / c.n / 60) : '–', d: deltaHTML(c.n ? c.min / c.n : 0, p.n ? p.min / p.n : 0) };
+  const tiles = [
+    { lbl: `Séances ${unit}`, val: nf(c.n), d: deltaHTML(c.n, p.n) },
+    { lbl: `Distance ${unit}`, val: nf(c.km, 1) + ' km', d: deltaHTML(c.km, p.km) },
+    { lbl: `Durée ${unit}`, val: fmtHM(c.min / 60), d: deltaHTML(c.min, p.min) },
+    { lbl: `Dénivelé ${unit}`, val: nf(c.el) + ' m', d: deltaHTML(c.el, p.el) },
+    l5
+  ];
+  document.getElementById('kpis').innerHTML = tiles.map(t => `<div class="kpi"><div class="lbl">${t.lbl}</div><div class="val">${t.val}</div><div class="delta">${t.d} vs ${vs}</div></div>`).join('');
+}
+const sum = (l, k) => l.reduce((a, w) => a + (w[k] || 0), 0);
+
+/* ------------------------------------------------------------------ bucket chart */
+function bucketWindow() {
+  const g = state.g, ws = filtered();
+  const end = bucketStart(today, g);
+  let start;
+  if (g === 'year') start = ws.length ? bucketStart(ws[0].date, 'year') : end;
+  else start = stepBucket(end, g, -((g === 'week' ? 26 : 24) - 1));
+  const list = []; for (let b = start; b <= end; b = stepBucket(b, g, 1)) list.push(b);
+  return list;
+}
+function renderBucket() {
+  const g = state.g, m = M(), ws = filtered(), list = bucketWindow();
+  const horizon = g === 'week' ? 4 : g === 'month' ? 3 : 0;
+  const idx = new Map(list.map((b, i) => [b.getTime(), i]));
+  const per = {}; // sport -> array
+  ws.forEach(w => { const i = idx.get(bucketStart(w.date, g).getTime()); if (i === undefined) return;
+    (per[w.s] = per[w.s] || new Array(list.length).fill(0))[i] += m.f(w); });
+  const totals = list.map((_, i) => Object.values(per).reduce((a, arr) => a + arr[i], 0));
+  const future = []; for (let k = 1; k <= horizon; k++) future.push(stepBucket(list[list.length - 1], g, k));
+  const labels = [...list, ...future].map(b => bucketLabel(b, g));
+  const titles = [...list, ...future].map(b => bucketTitle(b, g));
+  const present = SPORTS.filter(s => per[s] && per[s].some(v => v > 0));
+
+  document.getElementById('t-bucket').textContent = `${m.label} par ${{ week: 'semaine', month: 'mois', year: 'an' }[g]}`;
+  document.getElementById('s-bucket').textContent = `${state.sport === 'Tous' ? 'Tous les sports' : state.sport} · ${list.length} ${{ week: 'dernières semaines', month: 'derniers mois', year: 'années' }[g]}` +
+    (horizon ? ` · tendance et prévision sur ${horizon} ${g === 'week' ? 'semaines' : 'mois'}` : '');
+
+  const datasets = present.map(s => ({ type: 'bar', label: s, data: [...per[s], ...future.map(() => null)], backgroundColor: sportColor(s),
+    borderColor: css('--surface-1'), borderWidth: 2, borderRadius: 4, borderSkipped: 'bottom', maxBarThickness: 30, stack: 's', order: 2 }));
+
+  // tendance + prévision (régression sur les K dernières périodes complètes)
+  let forecastNote = '';
+  if (horizon) {
+    const K = g === 'week' ? 8 : 6, done = totals.slice(0, -1);
+    if (done.length >= K) {
+      const fit = done.slice(-K), { a, b } = linreg(fit);
+      const startIdx = done.length - K, line = new Array(labels.length).fill(null);
+      for (let i = 0; i < K; i++) line[startIdx + i] = Math.max(0, a + b * i);
+      for (let j = 0; j <= horizon; j++) line[done.length + j] = Math.max(0, a + b * (K + j));
+      datasets.push({ type: 'line', label: 'Tendance et prévision', data: line, borderColor: css('--text-primary'), borderDash: [6, 4], borderWidth: 2,
+        pointRadius: 0, pointHoverRadius: 4, tension: 0, order: 1, spanGaps: false });
+      const next = Math.max(0, a + b * (K + 1));
+      forecastNote = `Tendance : ${b >= 0 ? '+' : '−'}${m.fmt(Math.abs(b))} par ${g === 'week' ? 'semaine' : 'mois'} · ${g === 'week' ? 'semaine' : 'mois'} suivant(e) estimé(e) à ${m.fmt(next)}`;
+    }
+  }
+  document.getElementById('lg-bucket').innerHTML = (state.sport === 'Tous' ? present.map(s => `<span><i style="background:${sportColor(s)}"></i>${s}</span>`).join('') : '') +
+    (datasets.some(d => d.type === 'line') ? `<span><i style="background:${css('--text-primary')};height:2px;width:14px"></i>Tendance et prévision</span>` : '') +
+    (forecastNote ? `<span style="color:var(--text-muted)">${forecastNote}</span>` : '');
+
+  const o = baseOpts();
+  o.scales = { x: { ...axisBase(), stacked: true, grid: { display: false }, ticks: { color: css('--text-secondary'), maxRotation: 0, autoSkip: true, maxTicksLimit: 14 } },
+               y: { ...axisBase(), stacked: true, beginAtZero: true, ticks: { color: css('--text-secondary'), padding: 6, callback: v => g === 'year' || state.metric !== 'h' ? nf(v) : nf(v) + ' h' } } };
+  o.plugins.tooltip.filter = it => it.raw != null && it.raw !== 0;
+  o.plugins.tooltip.callbacks = {
+    title: items => titles[items[0].dataIndex],
+    label: it => ` ${it.dataset.label} : ${m.fmt(it.raw)}`,
+    footer: items => { const bars = items.filter(i => i.dataset.type === 'bar'); return bars.length > 1 ? 'Total : ' + m.fmt(bars.reduce((a, i) => a + i.raw, 0)) : ''; }
+  };
+  mount('c-bucket', { data: { labels, datasets }, options: o });
+
+  // table
+  const rows = list.map((b, i) => { const l = ws.filter(w => bucketStart(w.date, g).getTime() === b.getTime());
+    return `<tr><td>${bucketTitle(b, g)}</td><td>${l.length}</td><td>${nf(sum(l, 'km'), 1)} km</td><td>${fmtHM(sum(l, 'min') / 60)}</td><td>${nf(sum(l, 'el'))} m</td></tr>`; }).reverse().join('');
+  document.getElementById('tbl-bucket').innerHTML = `<table><thead><tr><th>Période</th><th>Séances</th><th>Distance</th><th>Durée</th><th>Dénivelé</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+/* ------------------------------------------------------------------ year over year */
+const doyLabels = (() => { const out = [], dim = [31,28,31,30,31,30,31,31,30,31,30,31]; dim.forEach((n, m) => { for (let d = 1; d <= n; d++) out.push(`${d} ${MONTHS[m]}`); }); return out; })();
+const doyOf = d => { const dim = [31,28,31,30,31,30,31,31,30,31,30,31]; let k = d.getDate(); if (d.getMonth() === 1 && k > 28) k = 28; for (let m = 0; m < d.getMonth(); m++) k += dim[m]; return k - 1; };
+
+function renderChips() {
+  const el = document.getElementById('chips-years');
+  el.innerHTML = years.map((y, i) => { const c = css('--s-' + ['course','velo','nage','gym'][Math.max(0, state.years.indexOf(y))] || '--s-course');
+    const on = state.years.includes(y);
+    return `<label class="chip"><input type="checkbox" data-y="${y}" ${on ? 'checked' : ''}><span class="dot" style="background:${on ? c : 'var(--grid)'}"></span>${y}</label>`; }).join('');
+  el.querySelectorAll('input').forEach(inp => inp.addEventListener('change', () => {
+    const y = +inp.dataset.y;
+    if (inp.checked) { state.years.push(y); if (state.years.length > 3) state.years.shift(); }
+    else state.years = state.years.filter(v => v !== y);
+    if (!state.years.length) state.years = [y];
+    state.years.sort(); renderYoY();
+  }));
+}
+function renderYoY() {
+  renderChips();
+  const m = M(), ws = filtered(), sel = [...state.years].sort();
+  const colors = ['--s-course', '--s-velo', '--s-nage'].map(css);
+  document.getElementById('s-yoy').textContent = `${state.sport === 'Tous' ? 'Tous les sports' : state.sport} · ${m.label} cumulé depuis le 1er janvier (jusqu'à 3 années)`;
+  const datasets = sel.map((y, i) => {
+    const daily = new Array(365).fill(0);
+    ws.filter(w => w.date.getFullYear() === y).forEach(w => { daily[doyOf(w.date)] += m.f(w); });
+    const limit = y === today.getFullYear() ? doyOf(today) : 364; let c = 0;
+    const data = daily.map((v, k) => (k <= limit ? (c += v) : null));
+    return { label: String(y), data, borderColor: colors[i], backgroundColor: colors[i], borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5, pointHoverBackgroundColor: colors[i],
+             pointHoverBorderColor: css('--surface-1'), pointHoverBorderWidth: 2, tension: 0, stepped: false };
+  });
+  const o = baseOpts();
+  o.plugins.legend = { display: true, position: 'top', align: 'start', labels: { usePointStyle: true, pointStyle: 'line', boxWidth: 18, color: css('--text-secondary') } };
+  o.scales = { x: { ...axisBase(), grid: { display: false }, ticks: { color: css('--text-secondary'), autoSkip: false, maxRotation: 0,
+                 callback(v) { const l = doyLabels[v]; return l && l.startsWith('1 ') ? l.split(' ')[1] : null; } } },
+               y: { ...axisBase(), beginAtZero: true, ticks: { color: css('--text-secondary'), padding: 6, callback: v => nf(v) } } };
+  o.plugins.tooltip.callbacks = { title: it => doyLabels[it[0].dataIndex], label: it => it.raw == null ? null : ` ${it.dataset.label} : ${m.fmt(it.raw)}` };
+  mount('c-yoy', { type: 'line', data: { labels: doyLabels, datasets }, options: o });
+
+  // tableau mensuel
+  const val = (y, mo) => ws.filter(w => w.date.getFullYear() === y && w.date.getMonth() === mo).reduce((a, w) => a + m.f(w), 0);
+  const last = sel[sel.length - 1], prev = sel.length > 1 ? sel[sel.length - 2] : null;
+  let head = '<th>Mois</th>' + sel.map(y => `<th>${y}</th>`).join('') + (prev ? `<th>${last} vs ${prev}</th>` : '');
+  let body = MONTHS_LONG.map((name, mo) => { const vs = sel.map(y => val(y, mo));
+    const a = vs[vs.length - 1], b = prev ? vs[vs.length - 2] : 0;
+    return `<tr><td>${name}</td>${vs.map(v => `<td>${v ? m.fmt(v) : '–'}</td>`).join('')}${prev ? `<td>${b || a ? deltaHTML(a, b) : '–'}</td>` : ''}</tr>`; }).join('');
+  const tot = sel.map(y => MONTHS_LONG.reduce((a, _, mo) => a + val(y, mo), 0));
+  body += `<tr style="font-weight:650"><td>Total</td>${tot.map(v => `<td>${m.fmt(v)}</td>`).join('')}${prev ? `<td>${deltaHTML(tot[tot.length - 1], tot[tot.length - 2])}</td>` : ''}</tr>`;
+  document.getElementById('tbl-yoy').innerHTML = `<table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+}
+
+/* ------------------------------------------------------------------ sport split */
+function renderSplit() {
+  const m = M(), list = bucketWindow(), from = list[0], g = state.g;
+  const to = stepBucket(list[list.length - 1], g, 1);
+  const tot = {}; W.filter(w => w.date >= from && w.date < to).forEach(w => { tot[w.s] = (tot[w.s] || 0) + m.f(w); });
+  const rows = Object.entries(tot).filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+  document.getElementById('s-split').textContent = `${m.label} · même fenêtre que le graphique principal`;
+  if (!rows.length) { mount('c-split', { type: 'bar', data: { labels: [], datasets: [] }, options: baseOpts() }); return; }
+  const o = baseOpts(); o.indexAxis = 'y'; o.interaction = { mode: 'nearest', intersect: true };
+  o.scales = { x: { ...axisBase(), beginAtZero: true, ticks: { color: css('--text-secondary'), callback: v => nf(v) } }, y: { ...axisBase(), grid: { display: false } } };
+  const total = rows.reduce((a, [, v]) => a + v, 0);
+  o.plugins.tooltip.callbacks = { label: it => ` ${m.fmt(it.raw)} · ${nf(it.raw / total * 100)} %` };
+  mount('c-split', { type: 'bar', data: { labels: rows.map(r => r[0]), datasets: [{ data: rows.map(r => r[1]), backgroundColor: rows.map(r => sportColor(r[0])), borderRadius: 4, maxBarThickness: 22 }] }, options: o });
+}
+
+/* ------------------------------------------------------------------ pace / speed */
+function renderPace() {
+  const sp = state.sport, isRun = sp === 'Course' || sp === 'Tous', isBike = sp === 'Vélo' || sp === 'Spinning';
+  const canvas = document.getElementById('c-pace'), empty = document.getElementById('e-pace');
+  if (!isRun && !isBike) {
+    canvas.parentElement.hidden = true; empty.hidden = false; empty.textContent = 'Allure et vitesse disponibles pour la course, le vélo et le spinning.';
+    document.getElementById('s-pace').textContent = ''; document.getElementById('t-pace').textContent = 'Allure et vitesse'; return;
+  }
+  canvas.parentElement.hidden = false; empty.hidden = true;
+  const kind = isBike ? 'bike' : 'run';
+  const src = W.filter(w => (kind === 'run' ? w.s === 'Course' : w.s === sp) && w.km > 0 && w.min > 0 && w.date >= addDays(today, -365));
+  document.getElementById('t-pace').textContent = kind === 'run' ? 'Allure de course' : 'Vitesse moyenne';
+  document.getElementById('s-pace').textContent = `${kind === 'run' ? 'Course' : sp} · 12 derniers mois · points : séances · ligne : moyenne pondérée sur 28 jours` + (kind === 'run' ? ' · axe inversé : plus rapide en haut' : '');
+  const val = w => kind === 'run' ? w.min / w.km : w.km / (w.min / 60);
+  const pts = src.map(w => ({ x: w.date.getTime(), y: val(w), w }));
+  const roll = src.map(w => { const win = src.filter(v => v.date <= w.date && v.date > addDays(w.date, -28)); const k = sum(win, 'km'), t = sum(win, 'min');
+    return { x: w.date.getTime(), y: kind === 'run' ? t / k : k / (t / 60) }; });
+  const c = sportColor(kind === 'run' ? 'Course' : sp);
+  const o = baseOpts(); o.interaction = { mode: 'nearest', intersect: true };
+  o.scales = { x: { type: 'linear', ...axisBase(), grid: { display: false }, min: addDays(today, -365).getTime(), max: today.getTime(),
+                 ticks: { color: css('--text-secondary'), maxTicksLimit: 8, callback: v => { const d = new Date(v); return MONTHS[d.getMonth()] + ' ' + String(d.getFullYear()).slice(2); } } },
+               y: { ...axisBase(), reverse: kind === 'run', ticks: { color: css('--text-secondary'), padding: 6, callback: v => kind === 'run' ? fmtPace(v).replace(' /km', '') : nf(v, 0) } } };
+  o.plugins.tooltip.callbacks = { title: it => { const d = new Date(it[0].raw.x); return `${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`; },
+    label: it => { const r = it.raw; const t = r.w ? r.w.t + ' · ' : 'Moyenne 28 j · '; return ' ' + t + (kind === 'run' ? fmtPace(r.y) : nf(r.y, 1) + ' km/h'); } };
+  mount('c-pace', { type: 'scatter', data: { datasets: [
+    { label: 'Séances', data: pts, backgroundColor: c + '99', borderColor: css('--surface-1'), borderWidth: 1, pointRadius: 4, pointHoverRadius: 6 },
+    { type: 'line', label: 'Moyenne 28 jours', data: roll, borderColor: c, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 0, tension: 0.25 } ] }, options: o });
+}
+
+/* ------------------------------------------------------------------ fitness / fatigue */
+function renderLoad() {
+  const ws = filtered(), f = METRICS.load.f, scn = state.scn;
+  if (!ws.length) return;
+  const first = ws[0].date, daily = new Map();
+  ws.forEach(w => { const k = isoDay(w.date); daily.set(k, (daily.get(k) || 0) + f(w)); });
+  let ctl = 0, atl = 0; const ctlS = [], atlS = [], dates = [];
+  for (let d = first; d <= today; d = addDays(d, 1)) {
+    const l = daily.get(isoDay(d)) || 0; ctl += (l - ctl) / 42; atl += (l - atl) / 7;
+    ctlS.push(ctl); atlS.push(atl); dates.push(new Date(d));
+  }
+  let avg = 0; for (let i = 0; i < 28; i++) avg += daily.get(isoDay(addDays(today, -i))) || 0; avg = avg / 28 * scn;
+  const pastN = Math.min(120, ctlS.length), cS = ctlS.slice(-pastN), aS = atlS.slice(-pastN), dS = dates.slice(-pastN);
+  const fc = [], fa = [], fd = []; let c2 = ctl, a2 = atl;
+  for (let i = 1; i <= 14; i++) { c2 += (avg - c2) / 42; a2 += (avg - a2) / 7; fc.push(c2); fa.push(a2); fd.push(addDays(today, i)); }
+  const labels = [...dS, ...fd].map(d => `${d.getDate()} ${MONTHS[d.getMonth()]}`);
+  const tsb0 = ctl - atl, tsb1 = c2 - a2;
+  const zone = t => t > 5 ? 'frais' : t >= -10 ? 'équilibré' : 'charge élevée';
+  document.getElementById('load-stats').innerHTML =
+    `<div>Forme de fond<b>${nf(ctl)}</b></div><div>Fatigue<b>${nf(atl)}</b></div>` +
+    `<div>Fraîcheur aujourd'hui<b>${tsb0 > 0 ? '+' : ''}${nf(tsb0)} · ${zone(tsb0)}</b></div>` +
+    `<div>Fraîcheur dans 14 jours<b>${tsb1 > 0 ? '+' : ''}${nf(tsb1)} · ${zone(tsb1)}</b></div>`;
+  const mk = (label, past, fut, color) => ({ label, data: [...past, ...fut], borderColor: color, backgroundColor: color, borderWidth: 2.5, pointRadius: 0, pointHoverRadius: 5,
+    pointHoverBorderColor: css('--surface-1'), pointHoverBorderWidth: 2, tension: 0.2,
+    segment: { borderDash: ctx => (ctx.p0DataIndex >= pastN - 1 ? [6, 4] : undefined) } });
+  const o = baseOpts();
+  o.plugins.legend = { display: true, position: 'top', align: 'start', labels: { usePointStyle: true, pointStyle: 'line', boxWidth: 18, color: css('--text-secondary') } };
+  o.scales = { x: { ...axisBase(), grid: { display: false }, ticks: { color: css('--text-secondary'), maxRotation: 0, autoSkip: true, maxTicksLimit: 12 } },
+               y: { ...axisBase(), beginAtZero: true, ticks: { color: css('--text-secondary'), padding: 6, callback: v => nf(v) } } };
+  o.plugins.tooltip.callbacks = { title: it => (it[0].dataIndex >= pastN ? 'Prévision · ' : '') + labels[it[0].dataIndex], label: it => ` ${it.dataset.label} : ${nf(it.raw)}` };
+  mount('c-load', { type: 'line', data: { labels, datasets: [mk('Forme de fond', cS, fc, css('--s-course')), mk('Fatigue', aS, fa, css('--s-velo'))] }, options: o });
+}
+
+/* ------------------------------------------------------------------ predictions */
+const TARGETS = [{ n: '5 km', km: 5 }, { n: '10 km', km: 10 }, { n: 'Semi-marathon', km: 21.0975 }, { n: 'Marathon', km: 42.195 }];
+const riegel = (t, d, D) => t * Math.pow(D / d, 1.06);
+function bestEquiv(runs, D) {
+  let best = null;
+  runs.forEach(w => { if (w.km < 3 || w.km > 30) return; const r = w.km / D; if (r < 0.3 || r > 2.5) return;
+    const t = riegel(w.min * 60, w.km, D); if (!best || t < best.t) best = { t, w }; });
+  return best;
+}
+function renderPredict() {
+  const runs = W.filter(w => w.s === 'Course' && w.km > 0 && w.min > 0), el = document.getElementById('predict');
+  const recent = runs.filter(w => w.date >= addDays(today, -120));
+  if (!recent.length) { el.innerHTML = '<p class="empty">Pas assez de sorties de course sur les 120 derniers jours.</p>'; return; }
+  const rows = TARGETS.map(T => {
+    const b = bestEquiv(recent, T.km);
+    if (!b) return `<tr><td>${T.n}</td><td>–</td><td>–</td><td>Données insuffisantes</td></tr>`;
+    // meilleur mois -> régression
+    const pts = []; for (let k = 5; k >= 0; k--) { const ms = new Date(today.getFullYear(), today.getMonth() - k, 1, 12), me = new Date(today.getFullYear(), today.getMonth() - k + 1, 1, 12);
+      const bm = bestEquiv(runs.filter(w => w.date >= ms && w.date < me), T.km); if (bm) pts.push({ x: 5 - k, y: bm.t }); }
+    let trend = '–';
+    if (pts.length >= 4) {
+      const n = pts.length; let sx = 0, sy = 0, sxy = 0, sxx = 0; pts.forEach(p => { sx += p.x; sy += p.y; sxy += p.x * p.y; sxx += p.x * p.x; });
+      const den = n * sxx - sx * sx, slope = den ? (n * sxy - sx * sy) / den : 0, ic = (sy - slope * sx) / n;
+      let proj = ic + slope * 8; proj = Math.min(b.t * 1.05, Math.max(b.t * 0.92, proj));
+      trend = `${fmtTime(proj)} <span style="color:var(--text-muted)">(${proj < b.t ? '−' : '+'}${fmtTime(Math.abs(b.t - proj))})</span>`;
+    }
+    const d = b.w.date;
+    return `<tr><td>${T.n}</td><td><b>${fmtTime(b.t)}</b></td><td>${trend}</td><td>${nf(b.w.km, 1)} km le ${d.getDate()} ${MONTHS[d.getMonth()]}</td></tr>`;
+  }).join('');
+  el.innerHTML = `<table><thead><tr><th>Distance</th><th>Estimation actuelle</th><th>Tendance à 3 mois</th><th>Sortie de référence</th></tr></thead><tbody>${rows}</tbody></table>`;
+}
+
+/* ------------------------------------------------------------------ records */
+function renderRecords() {
+  const ws = filtered(), m = M(); const list = [];
+  const maxBy = (k) => ws.reduce((b, w) => (w[k] > (b ? b[k] : 0) ? w : b), null);
+  const dstr = w => `${w.date.getDate()} ${MONTHS[w.date.getMonth()]} ${w.date.getFullYear()}`;
+  const add = (lbl, val, sub) => list.push(`<li><span class="r-lbl">${lbl}</span><span class="r-val">${val}<span class="r-sub">${sub || ''}</span></span></li>`);
+  const dm = maxBy('km'); if (dm) add('Plus longue distance', nf(dm.km, 1) + ' km', `${dstr(dm)} · ${dm.t || dm.s}`);
+  const dt = maxBy('min'); if (dt) add('Plus longue durée', fmtHM(dt.min / 60), `${dstr(dt)} · ${dt.t || dt.s}`);
+  const de = maxBy('el'); if (de) add('Plus gros dénivelé', nf(de.el) + ' m', `${dstr(de)} · ${de.t || de.s}`);
+  const runs = ws.filter(w => w.s === 'Course' && w.km >= 5 && w.min > 0);
+  if (runs.length) { const b = runs.reduce((a, w) => (w.min / w.km < a.min / a.km ? w : a)); add('Meilleure allure (≥ 5 km)', fmtPace(b.min / b.km), `${nf(b.km, 1)} km · ${dstr(b)}`); }
+  const rides = ws.filter(w => (w.s === 'Vélo') && w.km >= 20 && w.min > 0);
+  if (rides.length) { const b = rides.reduce((a, w) => (w.km / w.min > a.km / a.min ? w : a)); add('Meilleure vitesse vélo (≥ 20 km)', nf(b.km / (b.min / 60), 1) + ' km/h', `${nf(b.km, 1)} km · ${dstr(b)}`); }
+  ['week', 'month'].forEach(g => { const map = new Map(); ws.forEach(w => { const b = bucketStart(w.date, g); map.set(b.getTime(), (map.get(b.getTime()) || 0) + m.f(w)); });
+    let best = null; map.forEach((v, k) => { if (!best || v > best.v) best = { v, k }; }); if (best) add(`Meilleur${g === 'week' ? 'e semaine' : ' mois'} (${m.label.toLowerCase()})`, m.fmt(best.v), bucketTitle(new Date(best.k), g)); });
+  let streak = 0, bestStreak = 0; const days = new Set(ws.map(w => isoDay(w.date)));
+  const weeks = new Set(ws.map(w => isoDay(mondayOf(w.date)))); let ws0 = mondayOf(ws.length ? ws[0].date : today);
+  for (let b = ws0; b <= mondayOf(today); b = addDays(b, 7)) { if (weeks.has(isoDay(b))) { streak++; bestStreak = Math.max(bestStreak, streak); } else streak = 0; }
+  if (ws.length) add('Plus longue série de semaines actives', bestStreak + ' sem.', 'Au moins une séance par semaine');
+  document.getElementById('s-records').textContent = state.sport === 'Tous' ? 'Tous les sports' : state.sport;
+  document.getElementById('records').innerHTML = list.join('') || '<li class="empty">Aucune donnée</li>';
+}
+
+/* ------------------------------------------------------------------ heatmap */
+function renderHeat() {
+  const ws = filtered(), perDay = new Map();
+  ws.forEach(w => perDay.set(isoDay(w.date), (perDay.get(isoDay(w.date)) || 0) + (w.min || 0)));
+  const start = addDays(mondayOf(today), -52 * 7), cell = 13, gap = 3, left = 28, top = 18;
+  const vals = [...perDay.values()].filter(v => v > 0).sort((a, b) => a - b);
+  const q = p => vals.length ? vals[Math.min(vals.length - 1, Math.floor(p * vals.length))] : 0;
+  const cuts = [q(0.25), q(0.5), q(0.75)];
+  const level = v => v <= 0 ? 0 : v <= cuts[0] ? 1 : v <= cuts[1] ? 2 : v <= cuts[2] ? 3 : 4;
+  let svg = '', lastMonth = -1, active = 0, total = 0;
+  for (let c = 0; c < 53; c++) for (let r = 0; r < 7; r++) {
+    const d = addDays(start, c * 7 + r); if (d > today) continue;
+    const key = isoDay(d), v = perDay.get(key) || 0; if (v) { active++; total += v; }
+    const lv = level(v), x = left + c * (cell + gap), y = top + r * (cell + gap);
+    if (r === 0 && d.getMonth() !== lastMonth && d.getDate() <= 7) { svg += `<text x="${x}" y="11" fill="${css('--text-muted')}" font-size="11">${MONTHS[d.getMonth()]}</text>`; lastMonth = d.getMonth(); }
+    svg += `<rect x="${x}" y="${y}" width="${cell}" height="${cell}" rx="3" fill="${css('--seq-' + (lv === 0 ? 0 : lv + 1))}" data-t="${d.getDate()} ${MONTHS[d.getMonth()]} ${d.getFullYear()} · ${v ? fmtHM(v / 60) : 'repos'}"/>`;
+  }
+  ['L', 'M', 'M', 'J', 'V', 'S', 'D'].forEach((l, r) => { if (r % 2 === 0) svg += `<text x="0" y="${top + r * (cell + gap) + 10}" fill="${css('--text-muted')}" font-size="11">${l}</text>`; });
+  const w = left + 53 * (cell + gap), h = top + 7 * (cell + gap);
+  const lg = [0, 1, 2, 3, 4].map(i => `<i style="background:${css('--seq-' + (i === 0 ? 0 : i + 1))}"></i>`).join('');
+  document.getElementById('s-heat').textContent = `${active} jours actifs · ${fmtHM(total / 60)} d'entraînement sur 12 mois · ${state.sport === 'Tous' ? 'tous les sports' : state.sport}`;
+  const el = document.getElementById('heat');
+  el.innerHTML = `<svg width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-label="Calendrier d'activité sur 53 semaines">${svg}</svg>
+    <div class="legend" style="margin-top:8px"><span>Moins</span><span style="gap:3px">${lg}</span><span>Plus</span></div>`;
+  el.querySelectorAll('rect').forEach(r => { r.addEventListener('mousemove', e => showTip(e, r.dataset.t)); r.addEventListener('mouseleave', hideTip); });
+}
+
+/* ------------------------------------------------------------------ wiring */
+function renderAll() { renderKPIs(); renderBucket(); renderYoY(); renderSplit(); renderPace(); renderLoad(); renderPredict(); renderRecords(); renderHeat(); }
+
+(function init() {
+  document.getElementById('meta').textContent = `${W.length} entraînements · du ${W.length ? isoDay(W[0].date) : '–'} au ${W.length ? isoDay(W[W.length - 1].date) : '–'} · généré le ${DATA.generated}`;
+  document.getElementById('demo-banner').hidden = !DATA.demo;
+  const fs = document.getElementById('f-sport');
+  fs.innerHTML = '<option value="Tous">Tous les sports</option>' + sportsPresent.map(s => `<option>${s}</option>`).join('');
+  fs.addEventListener('change', () => { state.sport = fs.value; renderAll(); });
+  const fm = document.getElementById('f-metric');
+  fm.innerHTML = Object.entries(METRICS).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('');
+  fm.addEventListener('change', () => { state.metric = fm.value; renderBucket(); renderYoY(); renderSplit(); renderRecords(); });
+  document.querySelectorAll('#f-g button').forEach(b => b.addEventListener('click', () => {
+    document.querySelectorAll('#f-g button').forEach(x => x.setAttribute('aria-pressed', x === b)); state.g = b.dataset.v; renderKPIs(); renderBucket(); renderSplit(); }));
+  document.getElementById('f-scn').addEventListener('change', e => { state.scn = +e.target.value; renderLoad(); });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', renderAll);
+  if (!W.length) { document.querySelector('.grid').innerHTML = '<p class="empty">Aucun entraînement trouvé dans la base Notion.</p>'; return; }
+  renderAll();
+})();
+</script>
+</body>
+</html>

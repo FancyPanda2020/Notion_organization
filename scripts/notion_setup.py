@@ -346,6 +346,18 @@ class NotionSystemBuilder:
             ],
             "Workouts": [
                 {
+                    "name": "Année",
+                    "formula": 'formatDate(prop("Date"), "YYYY")'
+                },
+                {
+                    "name": "Mois",
+                    "formula": 'formatDate(prop("Date"), "YYYY-MM")'
+                },
+                {
+                    "name": "Semaine",
+                    "formula": 'formatDate(prop("Date"), "GGGG-[S]WW")'
+                },
+                {
                     "name": "Vitesse moyenne (km/h)",
                     "formula": 'if(prop("Distance (km)") > 0 and prop("Durée (min)") > 0, round(prop("Distance (km)") / (prop("Durée (min)") / 60) * 10) / 10, 0)'
                 }
@@ -434,6 +446,32 @@ class NotionSystemBuilder:
             console.print(f"[red]Erreur lors de la création de la Commande Centrale: {str(e)}[/red]")
             raise
 
+    @staticmethod
+    def _sport_dashboard_blocks(dashboard_url: Optional[str]) -> List[Dict]:
+        """Blocs affichés en tête de la page Module Santé & Sport (lien vers le dashboard)."""
+        blocks = [{
+            "object": "block", "type": "heading_2",
+            "heading_2": {"rich_text": [{"type": "text", "text": {"content": "Dashboard statistiques"}}]}
+        }]
+        if dashboard_url:
+            blocks.append({"object": "block", "type": "bookmark", "bookmark": {"url": dashboard_url}})
+        else:
+            blocks.append({
+                "object": "block", "type": "paragraph",
+                "paragraph": {"rich_text": [{"type": "text", "text": {
+                    "content": "Lien à ajouter : définir SPORT_DASHBOARD_URL dans .env puis lancer "
+                               "python scripts/sport_dashboard.py --link-page (voir docs/05_DASHBOARD_SPORT.md)."}}]}
+            })
+        return blocks
+
+    def save_ids(self, modules: Dict[str, str]):
+        """Mémorise les IDs créés (utilisés par les scripts de synchronisation et le dashboard)."""
+        ids_file = Path(__file__).parent.parent / ".notion_ids.json"
+        clean = {name.split(" ", 1)[1] if " " in name else name: pid for name, pid in modules.items()}
+        ids_file.write_text(json.dumps({"databases": self.created_databases, "modules": clean},
+                                       ensure_ascii=False, indent=2), encoding="utf-8")
+        console.print(f"[green]IDs enregistrés dans {ids_file.name}[/green]")
+
     def create_module_pages(self):
         """Crée les pages de modules"""
         console.print("\n[bold cyan]Création des pages de modules...[/bold cyan]")
@@ -448,9 +486,13 @@ class NotionSystemBuilder:
         ]
 
         created_modules = {}
+        dashboard_url = os.getenv("SPORT_DASHBOARD_URL")
 
         for module in modules:
             try:
+                children = []
+                if "Santé & Sport" in module["name"]:
+                    children = self._sport_dashboard_blocks(dashboard_url)
                 response = self.notion.pages.create(
                     parent={"type": "page_id", "page_id": self.parent_page_id},
                     icon={"type": "emoji", "emoji": module["icon"]},
@@ -460,7 +502,7 @@ class NotionSystemBuilder:
                             "text": {"content": module["name"]}
                         }]
                     },
-                    children=[]
+                    children=children
                 )
 
                 created_modules[module["name"]] = response["id"]
@@ -519,7 +561,8 @@ class NotionSystemBuilder:
         # Étape 5: Créer les pages de modules
         console.print("\n[bold cyan]Étape 5/5: Création des pages de modules[/bold cyan]")
         try:
-            self.create_module_pages()
+            modules = self.create_module_pages()
+            self.save_ids(modules)
         except Exception as e:
             console.print(f"[yellow]Avertissement: {str(e)}[/yellow]")
 

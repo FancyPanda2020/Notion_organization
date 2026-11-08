@@ -1,0 +1,12 @@
+# Secrets
+.env
+credentials.json
+token.json
+
+# Données personnelles générées (santé, finances...)
+output/
+.notion_ids.json
+logs/
+
+__pycache__/
+*.pyc

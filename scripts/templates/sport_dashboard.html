@@ -273,8 +273,8 @@ function bucketTitle(b, g) {
 
 /* ------------------------------------------------------------------ data */
 const W = DATA.workouts.map(w => ({ ...w, date: parseDate(w.d) })).sort((a, b) => a.date - b.date);
-const sportsPresent = SPORTS.filter(s => W.some(w => w.s === s));
 W.forEach(w => { if (!SPORTS.includes(w.s)) w.s = 'Autre'; });
+const sportsPresent = SPORTS.filter(s => W.some(w => w.s === s));
 const years = [...new Set(W.map(w => w.date.getFullYear()))].sort();
 
 const state = { sport: 'Tous', g: 'week', metric: 'km', years: years.slice(-2), scn: 1 };

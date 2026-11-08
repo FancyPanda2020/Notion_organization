@@ -20,11 +20,9 @@ import json
 import os
 import random
 import sys
-import time
 from datetime import date, datetime, timedelta
 from pathlib import Path
 
-import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -34,87 +32,13 @@ TEMPLATE = Path(__file__).parent / "templates" / "sport_dashboard.html"
 DEFAULT_OUTPUT = ROOT / "output" / "sport_dashboard.html"
 IDS_FILE = ROOT / ".notion_ids.json"
 
-NOTION_API = "https://api.notion.com/v1"
-NOTION_VERSION = "2022-06-28"
-
-
-# --------------------------------------------------------------------------- #
-# Notion
-# --------------------------------------------------------------------------- #
-
-def _headers(token: str) -> dict:
-    return {
-        "Authorization": f"Bearer {token}",
-        "Notion-Version": NOTION_VERSION,
-        "Content-Type": "application/json",
-    }
-
-
-def _request(method: str, url: str, token: str, **kwargs) -> dict:
-    """Appel API Notion avec reprise simple sur 429 / erreurs réseau."""
-    for attempt in range(5):
-        resp = requests.request(method, url, headers=_headers(token), timeout=30, **kwargs)
-        if resp.status_code == 429:
-            time.sleep(float(resp.headers.get("Retry-After", 2 ** attempt)))
-            continue
-        if resp.status_code >= 500:
-            time.sleep(2 ** attempt)
-            continue
-        if not resp.ok:
-            raise RuntimeError(f"Notion {resp.status_code}: {resp.text[:300]}")
-        return resp.json()
-    raise RuntimeError("Notion: trop de tentatives échouées")
+from notion_workouts import fetch_workouts, parse_id, request as _request  # noqa: E402
 
 
 def _read_ids() -> dict:
     if IDS_FILE.exists():
         return json.loads(IDS_FILE.read_text(encoding="utf-8"))
     return {}
-
-
-def _text(prop: dict) -> str:
-    items = prop.get("title") or prop.get("rich_text") or []
-    return "".join(i.get("plain_text", "") for i in items)
-
-
-def _num(prop: dict):
-    return prop.get("number") if prop else None
-
-
-def _select(prop: dict):
-    sel = prop.get("select") if prop else None
-    return sel["name"] if sel else None
-
-
-def fetch_workouts(token: str, db_id: str) -> list:
-    """Lit tous les entraînements (pagination complète) et les normalise."""
-    workouts, cursor = [], None
-    while True:
-        body = {"page_size": 100}
-        if cursor:
-            body["start_cursor"] = cursor
-        data = _request("POST", f"{NOTION_API}/databases/{db_id}/query", token, json=body)
-        for page in data["results"]:
-            p = page["properties"]
-            start = (p.get("Date", {}).get("date") or {}).get("start")
-            if not start:
-                continue
-            rpe = _select(p.get("Effort perçu (RPE 1-10)"))
-            workouts.append({
-                "d": start[:10],
-                "t": _text(p.get("Titre", {})),
-                "s": _select(p.get("Type d'activité")) or "Autre",
-                "min": _num(p.get("Durée (min)")) or 0,
-                "km": _num(p.get("Distance (km)")) or 0,
-                "el": _num(p.get("Dénivelé positif (m)")) or 0,
-                "hr": _num(p.get("Fréquence cardiaque moyenne")) or 0,
-                "rpe": int(rpe) if rpe and rpe.isdigit() else 0,
-            })
-        if not data.get("has_more"):
-            break
-        cursor = data["next_cursor"]
-    workouts.sort(key=lambda w: w["d"])
-    return workouts
 
 
 # --------------------------------------------------------------------------- #
@@ -194,7 +118,7 @@ def link_to_notion(token: str, page_id: str, url: str) -> None:
          "heading_2": {"rich_text": [{"type": "text", "text": {"content": "Dashboard statistiques"}}]}},
         {"object": "block", "type": "bookmark", "bookmark": {"url": url}},
     ]
-    _request("PATCH", f"{NOTION_API}/blocks/{page_id}/children", token, json={"children": children})
+    _request("PATCH", f"/blocks/{page_id}/children", token, json={"children": children})
 
 
 def main() -> int:
@@ -211,7 +135,7 @@ def main() -> int:
     if args.demo:
         workouts = demo_workouts()
     else:
-        db_id = os.getenv("NOTION_WORKOUTS_DB_ID") or ids.get("databases", {}).get("Workouts")
+        db_id = parse_id(os.getenv("NOTION_WORKOUTS_DB_ID", "")) or ids.get("databases", {}).get("Workouts")
         if not token or not db_id:
             print("NOTION_TOKEN et NOTION_WORKOUTS_DB_ID (ou .notion_ids.json) sont requis.", file=sys.stderr)
             return 1
@@ -222,7 +146,7 @@ def main() -> int:
 
     if args.link_page:
         url = os.getenv("SPORT_DASHBOARD_URL")
-        page_id = os.getenv("SPORT_MODULE_PAGE_ID") or ids.get("modules", {}).get("Module Santé & Sport")
+        page_id = parse_id(os.getenv("SPORT_MODULE_PAGE_ID", "")) or ids.get("modules", {}).get("Module Santé & Sport")
         if not (token and url and page_id):
             print("--link-page nécessite NOTION_TOKEN, SPORT_DASHBOARD_URL et SPORT_MODULE_PAGE_ID.", file=sys.stderr)
             return 1

@@ -209,7 +209,7 @@ Documentation complète disponible dans `/docs` :
    - Automatisations futures
    - Monitoring
 
-4. **[Dashboard Sport](docs/05_DASHBOARD_SPORT.md)** - Statistiques façon Strava, comparaison d'années, prévisions
+4. **[Dashboard Sport](docs/05_DASHBOARD_SPORT.md)** - Statistiques façon Strava écrites dans la page Notion, comparaison d'années, prévisions
 
 5. **[Architecture Technique](DATABASE_STRUCTURE_COMPLETE.md)** - Spécifications complètes
    - Schéma des 17 bases de données

@@ -1,62 +1,53 @@
-# Dashboard Sport (statistiques et prévisions)
+# Dashboard Sport dans Notion
 
-Un dashboard de type Strava, généré à partir de la base Notion **Entraînements** (Workouts) et accessible par un lien dans la page **Module Santé & Sport**.
+Une section **Dashboard statistiques** est écrite directement dans la page **Santé & Sport** : tableaux, graphiques (images), prévisions et records, calculés à partir de la base **Entraînements**. Le script remplace la section à la même place à chaque exécution.
 
-## Contenu
+## Contenu de la section
 
-| Bloc | Description |
-|------|-------------|
-| Filtres | Sport (ou tous), regroupement semaine / mois / année, indicateur (distance, durée, séances, dénivelé, charge) |
-| Indicateurs clés | Période en cours comparée au même point de la période précédente |
-| Graphique principal | Indicateur par semaine / mois / an, empilé par sport, avec tendance et prévision (4 semaines ou 3 mois) |
-| Comparer les années | Cumul depuis le 1er janvier, jusqu'à 3 années superposées, plus tableau mensuel avec écart |
-| Répartition par sport | Part de chaque sport sur la fenêtre affichée |
-| Allure / vitesse | Course : allure par sortie et moyenne 28 jours. Vélo et spinning : vitesse |
-| Forme, fatigue, prévision | Modèle forme/fatigue (moyennes mobiles 42 j et 7 j de la charge), projection à 14 jours selon 4 scénarios |
-| Prévisions de performance | Temps estimés sur 5 km, 10 km, semi et marathon (Riegel), tendance à 3 mois |
-| Records | Distance, durée, dénivelé, meilleure allure, meilleure semaine / mois, série de semaines actives |
-| Régularité | Calendrier d'activité sur 53 semaines |
+**Vue d'ensemble (tous sports)**
+- Synthèse semaine / mois / année, comparée au même point de la période précédente
+- Graphiques par semaine (26 dernières) et par mois (24 derniers), empilés par sport, avec tendance et prévision à 4 semaines / 3 mois
+- Comparaison des années : cumul depuis le 1er janvier sur 3 années, et totaux par année
+- Forme de fond et fatigue avec projection à 14 jours
+- Prévisions de performance (5 km, 10 km, semi, marathon) et records
+- Calendrier de régularité sur 53 semaines
 
-Le fichier suit le thème clair ou sombre du système. Un tableau est disponible sous chaque graphique principal.
+**Par sport** (les 5 sports les plus pratiqués, un bloc dépliable chacun) : synthèse, graphiques semaine / mois / année, comparaison des années, tableau mensuel par année, allure (course) ou vitesse (vélo, spinning), records.
+
+## Mise en place (une fois)
+
+1. Créez une intégration sur https://www.notion.so/my-integrations et copiez le token.
+2. **Partagez avec cette intégration** la page Santé & Sport et la base Entraînements (menu ... > Connexions).
+3. `cp .env.example .env`, renseignez `NOTION_TOKEN`. Les liens de votre page et de votre base sont déjà dans `.env.example`.
+4. `pip install -r requirements.txt`
 
 ## Utilisation
 
 ```bash
-# Aperçu avec des données fictives
-python scripts/sport_dashboard.py --demo
-
-# Avec vos données Notion (NOTION_TOKEN + base Workouts partagée avec l'intégration)
-python scripts/sport_dashboard.py
+python scripts/sport_notion_dashboard.py --inspect   # vérifie les propriétés détectées dans votre base
+python scripts/sport_notion_dashboard.py --dry-run   # génère les images dans output/notion_dashboard/ sans toucher à Notion
+python scripts/sport_notion_dashboard.py             # publie dans la page
 ```
 
-Le fichier est écrit dans `output/sport_dashboard.html` (ignoré par git : il contient vos données de santé). Il charge Chart.js depuis cdnjs, une connexion Internet est donc nécessaire à l'ouverture.
+Commencez par `--inspect` : le script reconnaît les propriétés par leur nom (date, type d'activité, durée, distance, dénivelé, fréquence cardiaque, effort perçu). Si une correspondance est fausse ou manquante (ou si la durée n'est pas en minutes), créez `config/sport_fields.json` :
 
-## Alimenter l'historique
-
-Pour comparer les années, il faut l'historique complet. Importez-le depuis Strava :
-
-```bash
-python scripts/sync_strava.py     # répondre 1500 au nombre de jours
+```json
+{"duration": "Durée (min)", "sport": "Type d'activité", "distance": "Distance (km)", "duration_unit": "min"}
 ```
 
-Limites Strava : 100 requêtes / 15 min et 1000 / jour ; en cas d'historique long, relancer le lendemain. Les activités Strava n'ont pas d'effort perçu (RPE) : la charge utilise 5 par défaut. Renseignez le RPE dans Notion pour affiner forme et fatigue.
+Mise à jour automatique (cron, tous les jours à 7 h) : `0 7 * * * cd /chemin/Notion_organization && python3 scripts/sync_strava.py && python3 scripts/sport_notion_dashboard.py`
 
-## Lien dans Notion
+Pour l'historique (comparaison d'années), importez tout depuis Strava avec `sync_strava.py` (1500 jours, en plusieurs fois à cause des limites : 100 requêtes / 15 min, 1000 / jour).
 
-Notion ne peut pas exécuter ce dashboard directement : il faut l'héberger quelque part et y faire pointer un lien.
+## Limites à connaître
 
-1. Hébergez `output/sport_dashboard.html` à une adresse **privée** (par exemple un hébergement statique protégé par mot de passe ou une authentification). Ne le publiez pas en accès public : il contient vos données de santé.
-2. Renseignez `SPORT_DASHBOARD_URL` dans `.env`.
-3. `python scripts/notion_setup.py` crée la page Module Santé & Sport avec le lien. Si le système existe déjà : `python scripts/sport_dashboard.py --link-page` ajoute le lien dans la page (ID lu dans `.notion_ids.json` ou `SPORT_MODULE_PAGE_ID`).
-
-Mise à jour quotidienne (cron) : `0 7 * * * cd /chemin/Notion_organization && python3 scripts/sync_strava.py && python3 scripts/sport_dashboard.py` suivi de la copie du fichier vers votre hébergement.
+- **Images fixes** : Notion n'exécute pas de code. Les graphiques ne sont pas interactifs (pas de filtre ni de survol). Les filtres sport / période sont remplacés par des blocs par sport. Pour explorer en détail, la version HTML interactive reste disponible (`scripts/sport_dashboard.py`, à héberger de façon privée).
+- **Thème** : les images ont un fond clair. Pour un espace en mode sombre : `--theme dark`.
+- **Section générée** : ne la modifiez pas à la main, elle est remplacée à chaque mise à jour. Ajoutez vos propres blocs en dehors du titre « Dashboard statistiques ».
+- **Graphiques natifs** : l'API Notion ne permet pas de créer des vues graphiques. Vous pouvez en ajouter à la main sur la base (vue Graphique, axe X = date par mois, regroupé par type d'activité) en complément.
 
 ## Méthode des prévisions
 
-- **Tendance du volume** : régression linéaire sur les 8 dernières semaines (ou 6 mois) complètes. Une extrapolation, pas un plan d'entraînement.
-- **Forme / fatigue** : charge de séance = durée (min) x RPE. Forme de fond = moyenne exponentielle sur 42 jours, fatigue = 7 jours, fraîcheur = forme - fatigue (au-dessus de +5 : frais ; entre -10 et +5 : équilibré ; en dessous : charge élevée). Seuils indicatifs.
-- **Temps estimés** : formule de Riegel, t2 = t1 x (d2 / d1)^1,06, appliquée aux sorties de 3 à 30 km des 120 derniers jours, en retenant la meilleure. L'allure moyenne d'une sortie d'entraînement est plus lente que votre allure de course : l'estimation est donc prudente. La tendance à 3 mois (régression sur les meilleurs mois, bornée entre -8 % et +5 % du temps actuel) exige au moins 4 mois de données.
-
-## Contournement : graphiques natifs Notion
-
-L'API Notion ne permet pas de créer des vues (graphique, calendrier, tableau). Si vous voulez aussi des graphiques directement dans Notion, créez-les à la main sur la base Entraînements : vue Graphique, axe X = propriété **Mois**, **Semaine** ou **Année** (formules ajoutées par `notion_setup.py`), Y = somme de Distance (km) ou Durée (min), regroupé par Type d'activité. Pour comparer deux années, filtrez sur **Année**.
+- **Tendance du volume** : régression linéaire sur les 8 dernières semaines (ou 6 mois) complètes.
+- **Forme / fatigue** : charge de séance = durée (min) x effort perçu (5 par défaut si vide, ce qui est le cas des activités importées de Strava). Forme de fond = moyenne exponentielle sur 42 jours, fatigue = 7 jours, fraîcheur = forme - fatigue.
+- **Temps estimés** : formule de Riegel, t2 = t1 x (d2 / d1)^1,06, sur les sorties de 3 à 30 km des 120 derniers jours (la meilleure est retenue). Estimation prudente, car l'allure moyenne d'une sortie d'entraînement est plus lente que l'allure de course. Tendance à 3 mois : régression sur les meilleurs mois, bornée entre -8 % et +5 % du temps actuel, au moins 4 mois de données.

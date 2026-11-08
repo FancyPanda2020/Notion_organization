@@ -10,6 +10,10 @@ google-api-python-client==2.116.0
 # Strava API
 stravalib==1.6.0
 
+# Graphiques du dashboard Sport
+matplotlib>=3.8
+numpy>=1.26
+
 # Utilitaires
 python-dotenv==1.0.1
 requests==2.31.0
